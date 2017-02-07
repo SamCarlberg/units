@@ -29,4 +29,8 @@ public class Centimeters extends Measure<Distance> {
         return Millimeters.of(this);
     }
 
+    public Meters asMeters() {
+        return Meters.of(this);
+    }
+
 }

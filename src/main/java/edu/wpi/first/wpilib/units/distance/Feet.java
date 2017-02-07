@@ -25,4 +25,12 @@ public class Feet extends Measure<Distance> {
         return Millimeters.of(this);
     }
 
+    public Centimeters asCentimeters() {
+        return Centimeters.of(this);
+    }
+
+    public Meters asMeters() {
+        return Meters.of(this);
+    }
+
 }
