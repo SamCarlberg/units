@@ -9,21 +9,30 @@ double distance = 12.34; // What unit is this?
 Now you can have this:
 
 ```java
-Feet distance = Feet.of(12.34); // It has to be feet!
+Measure<Distance> distance = Units.Inches.of(12.34); // It has to be inches!
+```
+
+Of course, units can be converted from one type to another, as long as they measure the same kind of thing!
+
+```java
+Measure<Distance> distance = Units.Inches.of(12.34).as(Unit.Feet);
 
 // or
 
-Feet distance = Distance.FEET.of(12.34);
-
+Measure<Distance> distance = Unit.Feet.of(Units.Inches.of(12.34));
 ```
 
-A measure holds a magnitude (`magnitude`) and a unit (`FEET`, et cetera). All unit types are enums, similar to `java.util.concurrent.TimeUnit`.
+## Creating custom units
+
+This library has many common units, but sometimes you just want to use furlongs or stone:
+
+```java
+Unit<Distance> Furlongs = Units.Feet.multiply(660);
+Unit<Mass> Stone = Units.Pounds.multiply(14);
+Unit<Mass> Milligram = Units.Grams.divide(1000);
+```
 
 ## Sample use
-
-Two examples. One with a more generic interface that allows for the class to return any unit it wants, and a more concrete interface that requires it to return a specific unit but allows easier conversion on the user side.
-
-##### More generic
 
 ```java
 interface Gyro {
@@ -32,18 +41,9 @@ interface Gyro {
 
 Gyro gyro = ...
 
-double degrees = gyro.getAngle().as(Angle.DEGREES);
-
+Measure<Angle> angle = gyro.getAngle();
 ```
 
-##### More concrete
 ```java
-interface Gyro {
-  Radians getAngle();
-}
-
-Gyro gyro = ...
-
-double degrees = gyro.getAngle().asDegrees();
-
+Measure<Distance> distance = Units.Feet.of(10).as(Units.Inches);
 ```
