@@ -9,13 +9,13 @@ import java.util.Objects;
  *
  * @param <U> the unit type of the measure
  */
-public class Measure<U extends Unit<U>> {
+public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
 
     /**
      * The threshold for two measures to be considered equivalent if converted to the same unit.
      * This is only needed due to floating-point error.
      */
-    private static final double EQUIVALENCE_THRESHOLD = 1e-12;
+    public static final double EQUIVALENCE_THRESHOLD = 1e-12;
 
     private final double magnitude;
     private final U unit;
@@ -48,16 +48,17 @@ public class Measure<U extends Unit<U>> {
     /**
      * Converts this measure to a measure with a different unit of the same type, eg minutes to seconds.
      *
-     * @param otherUnit the unit to convert this measure to
+     * @param unit the unit to convert this measure to
+     *
+     * @return the value of this measure in the given unit
      */
     @SuppressWarnings("unchecked") // U == Unit<U> by design, so casting is OK
-    public Measure<U> as(Unit<U> otherUnit) {
-        if (otherUnit == this.unit) {
-            // Same unit (eg inches, seconds, etc). No conversion necessary, and measures are immutable
-            // so no need to create a new one.
-            return this;
+    public double as(Unit<U> unit) {
+        if (unit == this.unit) {
+            // Same unit (eg inches, seconds, etc). No conversion necessary.
+            return magnitude;
         } else {
-            return new Measure<>(unit.convert(magnitude, otherUnit), otherUnit);
+            return this.unit.convert(magnitude, unit);
         }
     }
 
@@ -142,6 +143,11 @@ public class Measure<U extends Unit<U>> {
     @Override
     public int hashCode() {
         return Objects.hash(magnitude, unit);
+    }
+
+    @Override
+    public int compareTo(Measure<U> o) {
+        return Double.compare(this.baseUnitMagnitude(), o.baseUnitMagnitude());
     }
 
 }

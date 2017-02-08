@@ -65,4 +65,10 @@ public class MeasureTest {
         assertTrue(feet.isEquivalent(inches));
     }
 
+    @Test
+    public void testAs() {
+        Measure<Distance> m = new Measure<>(12, Units.Inches);
+        assertEquals(1, m.as(Units.Feet), Measure.EQUIVALENCE_THRESHOLD);
+    }
+
 }

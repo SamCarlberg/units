@@ -15,12 +15,13 @@ Measure<Distance> distance = Units.Inches.of(12.34); // It has to be inches!
 Of course, units can be converted from one type to another, as long as they measure the same kind of thing!
 
 ```java
-Measure<Distance> distance = Units.Inches.of(12.34).as(Unit.Feet);
-
-// or
-
-Measure<Distance> distance = Unit.Feet.of(Units.Inches.of(12.34));
+void doSomething(Measure<Distance> distance) {
+  // Convert the distance to some known type that this class can use
+  double inches = distance.as(Units.Inches);
+  // ...
+}
 ```
+
 
 ## Creating custom units
 
@@ -42,8 +43,4 @@ interface Gyro {
 Gyro gyro = ...
 
 Measure<Angle> angle = gyro.getAngle();
-```
-
-```java
-Measure<Distance> distance = Units.Feet.of(10).as(Units.Inches);
 ```
