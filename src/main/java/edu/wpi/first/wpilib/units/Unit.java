@@ -51,9 +51,8 @@ public class Unit<U extends Unit<U>> {
      *
      * @param magnitude the magnitude of the measure to create
      */
-    @SuppressWarnings("unchecked")
     public Measure<U> of(double magnitude) {
-        return new Measure<>(magnitude, (U) this);
+        return new Measure<>(magnitude, this);
     }
 
     /**
@@ -73,7 +72,6 @@ public class Unit<U extends Unit<U>> {
      * </code></pre>
      * @see #divide(double)
      */
-    @SuppressWarnings("unchecked")
     public Unit<U> multiply(double scale) {
         return new Unit<>(baseUnitEquivalent * scale);
     }
