@@ -12,9 +12,4 @@ public class Distance extends Unit<Distance> {
         super(baseUnitEquivalent);
     }
 
-    @Override
-    public Distance multiply(double scale) {
-        return new Distance(getBaseUnitEquivalent() * scale);
-    }
-
 }

@@ -12,9 +12,4 @@ public class Unitless extends Unit<Unitless> {
         super(baseUnitEquivalent);
     }
 
-    @Override
-    public Unitless multiply(double scale) {
-        return new Unitless(getBaseUnitEquivalent() * scale);
-    }
-
 }

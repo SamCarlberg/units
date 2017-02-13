@@ -12,9 +12,4 @@ public class Mass extends Unit<Mass> {
         super(baseUnitEquivalent);
     }
 
-    @Override
-    public Mass multiply(double scale) {
-        return new Mass(getBaseUnitEquivalent() * scale);
-    }
-
 }

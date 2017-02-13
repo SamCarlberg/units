@@ -12,9 +12,4 @@ public class Time extends Unit<Time> {
         super(baseUnitEquivalent);
     }
 
-    @Override
-    public Time multiply(double scale) {
-        return new Time(getBaseUnitEquivalent() * scale);
-    }
-
 }

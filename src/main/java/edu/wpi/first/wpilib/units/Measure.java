@@ -52,7 +52,6 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
      *
      * @return the value of this measure in the given unit
      */
-    @SuppressWarnings("unchecked") // U == Unit<U> by design, so casting is OK
     public double as(Unit<U> unit) {
         if (unit == this.unit) {
             // Same unit (eg inches, seconds, etc). No conversion necessary.
@@ -108,7 +107,7 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
      * Gets the magnitude of this measure in terms of the base unit.
      */
     public double baseUnitMagnitude() {
-        return magnitude * unit.getBaseUnitEquivalent();
+        return unit.getConverterToBase().applyAsDouble(magnitude);
     }
 
     /**

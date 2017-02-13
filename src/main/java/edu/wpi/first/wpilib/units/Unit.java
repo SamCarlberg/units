@@ -1,5 +1,8 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.Objects;
+import java.util.function.DoubleUnaryOperator;
+
 /**
  * A unit is some unit of measurement that defines a quantity, such as grams, meters, or seconds.
  *
@@ -7,7 +10,19 @@ package edu.wpi.first.wpilib.units;
  */
 public class Unit<U extends Unit<U>> {
 
-    private final double baseUnitEquivalent;
+    private final DoubleUnaryOperator toBaseConverter;
+    private final DoubleUnaryOperator fromBaseConverter;
+
+    /**
+     * Creates a new unit defined by its relationship to some base unit.
+     *
+     * @param toBaseConverter   a function for converting units of this type to the base unit
+     * @param fromBaseConverter a function for converting units of the base unit to this one
+     */
+    protected Unit(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+        this.toBaseConverter = Objects.requireNonNull(toBaseConverter);
+        this.fromBaseConverter = Objects.requireNonNull(fromBaseConverter);
+    }
 
     /**
      * Creates a new unit with the given name and multiplier to the base unit.
@@ -16,11 +31,8 @@ public class Unit<U extends Unit<U>> {
      *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
      */
     protected Unit(double baseUnitEquivalent) {
-        if (baseUnitEquivalent <= 0) {
-            throw new IllegalArgumentException(
-                    "Multiplier to base unit must be a positive number. Given: " + baseUnitEquivalent);
-        }
-        this.baseUnitEquivalent = baseUnitEquivalent;
+        this(x -> x * baseUnitEquivalent,
+             x -> x / baseUnitEquivalent);
     }
 
     public double convert(double value, Unit<U> otherUnit) {
@@ -36,14 +48,15 @@ public class Unit<U extends Unit<U>> {
      * equivalent value in the given unit
      */
     public double multiplierTo(Unit<U> otherUnit) {
-        return otherUnit.getBaseUnitEquivalent() / this.getBaseUnitEquivalent();
+        return this.fromBaseConverter.andThen(otherUnit.toBaseConverter).applyAsDouble(1);
     }
 
-    /**
-     * Gets the magnitude of this unit in terms of the base unit.
-     */
-    public final double getBaseUnitEquivalent() {
-        return baseUnitEquivalent;
+    public DoubleUnaryOperator getConverterToBase() {
+        return toBaseConverter;
+    }
+
+    public DoubleUnaryOperator getConverterFromBase() {
+        return fromBaseConverter;
     }
 
     /**
@@ -64,16 +77,15 @@ public class Unit<U extends Unit<U>> {
      *
      * @param scale the scale factor of the new unit as compared to this one
      *
-     * @implNote Subclasses should override this, otherwise unexpected behavior can occur:
-     * <pre><code>
-     *     class Time extends Unit&lt;Time&gt; { }
-     *     <br>
-     *     Time t = Units.Seconds.multiply(...); // Error!
-     * </code></pre>
      * @see #divide(double)
      */
     public Unit<U> multiply(double scale) {
-        return new Unit<>(baseUnitEquivalent * scale);
+        if (scale == 1) {
+            // Same units, just reuse this object.
+            return this;
+        }
+        return new Unit<>(this.toBaseConverter.andThen(x -> x * scale),
+                          this.fromBaseConverter.andThen(x -> x / scale));
     }
 
     /**

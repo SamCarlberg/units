@@ -12,9 +12,4 @@ public class Angle extends Unit<Angle> {
         super(baseUnitEquivalent);
     }
 
-    @Override
-    public Angle multiply(double scale) {
-        return new Angle(getBaseUnitEquivalent() * scale);
-    }
-
 }
