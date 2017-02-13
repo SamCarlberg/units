@@ -41,6 +41,18 @@ Unit<Mass> Stone = Units.Pounds.aggregate(14);
 Unit<Mass> Milligram = Units.Grams.splitInto(1000);
 ```
 
+#### `aggregate(double)` and `splitInto(double)`
+
+`unit.aggregate(n)` creates a new unit that is equivalent to _n_ of the original unit; the new unit is the "aggregate" of _n_ of the original unit
+
+`unit.splitInto(n)` is the reverse; it creates a new unit that is equivalent to 1 / _n_ of the original unit (the original unit is "split into" _n_ equal parts, each of which is equal to 1 of the resulting unit)
+
+For example,
+```java
+Unit kilo = someUnit.aggregate(1000);
+Unit milli = someUnit.splitInto(1000);
+```
+
 ## Sample use
 
 ```java
