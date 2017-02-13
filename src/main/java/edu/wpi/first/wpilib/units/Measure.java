@@ -106,7 +106,7 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
     /**
      * Gets the magnitude of this measure in terms of the base unit.
      */
-    public double baseUnitMagnitude() {
+    private double baseUnitMagnitude() {
         return unit.getConverterToBase().applyAsDouble(magnitude);
     }
 

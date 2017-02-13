@@ -35,4 +35,19 @@ final class BaseUnits {
      */
     static final Unit<Unitless> Value = new Unitless(1);
 
+    /**
+     * The standard unit of electric potential, volts.
+     */
+    static final Unit<ElectricPotential> ElectricPotential = new ElectricPotential(1);
+
+    /**
+     * The standard unit of electric current, amperes.
+     */
+    static final Unit<ElectricCurrent> ElectricCurrent = new ElectricCurrent(1);
+
+    /**
+     * The standard unit of power, watts.
+     */
+    static final Unit<Power> Power = new Power(1);
+
 }

@@ -35,6 +35,12 @@ public class Unit<U extends Unit<U>> {
              x -> x / baseUnitEquivalent);
     }
 
+    /**
+     * Converts a value of this unit to a value of another unit of the same type.
+     *
+     * @param value     a value measured in this unit
+     * @param otherUnit the unit to convert the value to
+     */
     public double convert(double value, Unit<U> otherUnit) {
         return value * otherUnit.multiplierTo(this);
     }

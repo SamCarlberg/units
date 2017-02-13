@@ -38,6 +38,18 @@ public final class Units {
     public static final Unit<Unitless> Value = BaseUnits.Value;
     public static final Unit<Unitless> Percent = Value.multiply(100);
 
+    // Electric potential
+    public static final Unit<ElectricPotential> Volts = BaseUnits.ElectricPotential;
+    public static final Unit<ElectricPotential> Millivolts = Volts.multiply(1e3);
+
+    // Electric current
+    public static final Unit<ElectricCurrent> Amps = BaseUnits.ElectricCurrent;
+    public static final Unit<ElectricCurrent> Milliamps = Amps.multiply(1e3);
+
+    // Power
+    public static final Unit<Power> Watts = BaseUnits.Power;
+    public static final Unit<Power> Horsepower = Watts.divide(745.7);
+
     @SuppressWarnings("unchecked")
     public static <U extends Unit<U>> UnitBuilder<U> derive(Unit<U> unit) {
         return new UnitBuilder<>((U) unit);
