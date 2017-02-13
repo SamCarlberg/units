@@ -7,28 +7,21 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("unchecked") // Don't care about the generic types
 public class UnitTest { // :)
 
+
     @Test
-    public void testMultiplierTo() {
-        Unit a = new Unit(0.5);
-        Unit b = new Unit(2);
-        assertEquals(4, a.multiplierTo(b), 0);
-        assertEquals(0.25, b.multiplierTo(a), 0);
+    public void testAggregate() {
+        Unit u = new Unit(1);
+        Unit m = u.aggregate(10);
+        assertEquals(1, m.convert(10, u), 0);
+        assertEquals(1, u.convert(0.1, m), 0);
     }
 
     @Test
-    public void testMultiply() {
+    public void testSplitInto() {
         Unit u = new Unit(1);
-        Unit m = u.multiply(10);
-        assertEquals(0.1, m.multiplierTo(u), 0);
-        assertEquals(10, u.multiplierTo(m), 0);
-    }
-
-    @Test
-    public void testDivide() {
-        Unit u = new Unit(1);
-        Unit d = u.divide(10);
-        assertEquals(10, d.multiplierTo(u), 0);
-        assertEquals(0.1, u.multiplierTo(d), 0);
+        Unit d = u.splitInto(10);
+        assertEquals(1, d.convert(0.1, u), 0);
+        assertEquals(1, u.convert(10, d), 0);
     }
 
     @Test

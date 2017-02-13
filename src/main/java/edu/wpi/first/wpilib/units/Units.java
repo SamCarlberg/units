@@ -13,42 +13,57 @@ public final class Units {
 
     // Distance
     public static final Unit<Distance> Meters = BaseUnits.Distance;
-    public static final Unit<Distance> Millimeters = Units.derive(Meters).fromBase(m -> m * 1e3).toBase(mm -> mm * 1e-3).make();
-    public static final Unit<Distance> Centimeters = Units.derive(Meters).fromBase(m -> m * 1e2).toBase(cm -> cm * 1e-2).make();
-    public static final Unit<Distance> Inches = Units.derive(Meters).fromBase(m -> m * 39.3701).toBase(in -> in / 39.3701).make();
-    public static final Unit<Distance> Feet = Units.derive(Inches).fromBase(in -> in / 12).toBase(ft -> ft * 12).make();
+    public static final Unit<Distance> Millimeters = Milli(Meters);
+    public static final Unit<Distance> Centimeters = Meters.splitInto(100);
+    public static final Unit<Distance> Inches = Meters.splitInto(39.3701);
+    public static final Unit<Distance> Feet = Inches.aggregate(12);
 
     // Time
     public static final Unit<Time> Seconds = BaseUnits.Time;
-    public static final Unit<Time> Milliseconds = Units.derive(Seconds).fromBase(s -> s * 1e3).toBase(ms -> ms * 1e-3).make();
-    public static final Unit<Time> Minutes = Units.derive(Seconds).fromBase(s -> s * 60).toBase(min -> min / 60).make();
+    public static final Unit<Time> Milliseconds = Milli(Seconds);
+    public static final Unit<Time> Minutes = Seconds.aggregate(60);
 
     // Mass
     public static final Unit<Mass> Grams = BaseUnits.Mass;
-    public static final Unit<Mass> Kilograms = Grams.multiply(1e3);
-    public static final Unit<Mass> Pounds = Grams.multiply(453.592);
-    public static final Unit<Mass> Ounces = Pounds.divide(16);
+    public static final Unit<Mass> Kilograms = Kilo(Grams);
+    public static final Unit<Mass> Pounds = Grams.aggregate(453.592);
+    public static final Unit<Mass> Ounces = Pounds.splitInto(16);
 
     // Angle
     public static final Unit<Angle> Revolutions = BaseUnits.Angle;
-    public static final Unit<Angle> Radians = Revolutions.divide(2 * Math.PI);
-    public static final Unit<Angle> Degrees = Revolutions.divide(360);
+    public static final Unit<Angle> Radians = Revolutions.splitInto(2 * Math.PI);
+    public static final Unit<Angle> Degrees = Revolutions.splitInto(360);
 
     // Unitless
     public static final Unit<Unitless> Value = BaseUnits.Value;
-    public static final Unit<Unitless> Percent = Value.multiply(100);
+    public static final Unit<Unitless> Percent = Value.splitInto(100);
 
     // Electric potential
     public static final Unit<ElectricPotential> Volts = BaseUnits.ElectricPotential;
-    public static final Unit<ElectricPotential> Millivolts = Volts.multiply(1e3);
+    public static final Unit<ElectricPotential> Millivolts = Milli(Volts);
 
     // Electric current
     public static final Unit<ElectricCurrent> Amps = BaseUnits.ElectricCurrent;
-    public static final Unit<ElectricCurrent> Milliamps = Amps.multiply(1e3);
+    public static final Unit<ElectricCurrent> Milliamps = Milli(Amps);
 
     // Power
     public static final Unit<Power> Watts = BaseUnits.Power;
-    public static final Unit<Power> Horsepower = Watts.divide(745.7);
+    public static final Unit<Power> Milliwatts = Milli(Watts);
+    public static final Unit<Power> Horsepower = Watts.splitInto(745.7);
+
+    /**
+     * Creates a unit equal to a thousandth of the base unit, eg Milliseconds = Milli(Units.Seconds).
+     */
+    public static <U extends Unit<U>> Unit<U> Milli(Unit<U> baseUnit) {
+        return baseUnit.splitInto(1000);
+    }
+
+    /**
+     * Creates a unit equal to a thousand of the base unit, eg Kilograms = Kilo(Units.Grams).
+     */
+    public static <U extends Unit<U>> Unit<U> Kilo(Unit<U> baseUnit) {
+        return baseUnit.aggregate(1000);
+    }
 
     @SuppressWarnings("unchecked")
     public static <U extends Unit<U>> UnitBuilder<U> derive(Unit<U> unit) {

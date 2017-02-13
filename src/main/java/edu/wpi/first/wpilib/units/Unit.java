@@ -42,19 +42,7 @@ public class Unit<U extends Unit<U>> {
      * @param otherUnit the unit to convert the value to
      */
     public double convert(double value, Unit<U> otherUnit) {
-        return value * otherUnit.multiplierTo(this);
-    }
-
-    /**
-     * Gets the multiplier for converting values of this unit into values of another unit (eg feet to inches).
-     *
-     * @param otherUnit the unit to get the conversion multiplier for
-     *
-     * @return a multiplier <i>k</i> such that a measure with this unit multiplied by <i>k</i> will have an
-     * equivalent value in the given unit
-     */
-    public double multiplierTo(Unit<U> otherUnit) {
-        return this.fromBaseConverter.andThen(otherUnit.toBaseConverter).applyAsDouble(1);
+        return otherUnit.toBaseConverter.andThen(this.fromBaseConverter).applyAsDouble(value);
     }
 
     public DoubleUnaryOperator getConverterToBase() {
@@ -76,37 +64,33 @@ public class Unit<U extends Unit<U>> {
 
     /**
      * Creates a new unit based off this one, where <i>scale</i> amount of this this unit
-     * is equivalent to one of the new unit. For example, {@code Unit km = Units.Meters.multiply("km", 1000)}
-     * <p>
-     * This is equivalent to {@code divide(1 / scale)}
-     * </p>
+     * is equivalent to one of the new unit. For example, {@code Unit km = Meters.aggregate(1000)}
      *
-     * @param scale the scale factor of the new unit as compared to this one
+     * @param amount the magnitude of a measure of this unit to be equivalent to a measure of magnitude 1 of
+     *               the resulting unit. For example, {@code Seconds.aggregate(60)} would result in minutes.
      *
-     * @see #divide(double)
+     * @see #splitInto(double)
      */
-    public Unit<U> multiply(double scale) {
-        if (scale == 1) {
+    public Unit<U> aggregate(double amount) {
+        if (amount == 1) {
             // Same units, just reuse this object.
             return this;
         }
-        return new Unit<>(this.toBaseConverter.andThen(x -> x * scale),
-                          this.fromBaseConverter.andThen(x -> x / scale));
+        return new Unit<>(this.toBaseConverter.andThen(x -> x * amount),
+                          this.fromBaseConverter.andThen(x -> x / amount));
     }
 
     /**
      * Creates a new unit based off this one, where <i>scale</i> amount of the new new unit
-     * is equivalent to one if this unit. For example. {@code Unit mm = Units.Meters.divide("mm", 1000)}
-     * <p>
-     * This is equivalent to {@code multiply(1 / scale)}
-     * </p>
+     * is equivalent to one if this unit. For example. {@code Unit mm = Meters.splitInto(1000)}
      *
-     * @param scale the scale factor of this unit as compared to the new one
+     * @param amount the magnitude of a measure of the resulting unit to be equivalent to a measure of magnitude 1 of
+     *               this unit. For example, {@code Feet.splitInto(12)} would result in inches.
      *
-     * @see #multiply(double)
+     * @see #aggregate(double)
      */
-    public Unit<U> divide(double scale) {
-        return multiply(1 / scale);
+    public Unit<U> splitInto(double amount) {
+        return aggregate(1 / amount);
     }
 
 }

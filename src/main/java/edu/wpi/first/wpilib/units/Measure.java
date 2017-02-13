@@ -57,7 +57,7 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
             // Same unit (eg inches, seconds, etc). No conversion necessary.
             return magnitude;
         } else {
-            return this.unit.convert(magnitude, unit);
+            return unit.convert(magnitude, this.unit);
         }
     }
 
@@ -86,7 +86,7 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
      * Adds another measure to this one. The resulting measure has the same unit as this one.
      */
     public Measure<U> add(Measure<U> other) {
-        return new Measure<>(magnitude + other.unit().convert(other.magnitude(), unit), unit);
+        return new Measure<>(magnitude + unit.convert(other.magnitude(), other.unit()), unit);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
     }
 
     /**
-     * Negates this measure an returns the result.
+     * Negates this measure and returns the result.
      */
     public Measure<U> negate() {
         return new Measure<>(-magnitude, unit);
