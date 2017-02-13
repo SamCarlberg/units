@@ -17,7 +17,7 @@ public class Milliwatts extends Measure<Power> {
     }
 
     public static Milliwatts of(Measure<ElectricPotential> electricPotential, Measure<ElectricCurrent> electricCurrent) {
-        return new Milliwatts(electricPotential.as(Units.Volts) * electricCurrent.as(Units.Amps));
+        return new Milliwatts(electricPotential.as(Units.Volts) * electricCurrent.as(Units.Amps) / 1e3);
     }
 
 }
