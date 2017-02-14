@@ -49,7 +49,7 @@ public final class Units {
     // Power
     public static final Unit<Power> Watts = BaseUnits.Power;
     public static final Unit<Power> Milliwatts = Milli(Watts);
-    public static final Unit<Power> Horsepower = Watts.splitInto(745.7);
+    public static final Unit<Power> Horsepower = Watts.aggregate(745.7);
 
     /**
      * Creates a unit equal to a thousandth of the base unit, eg Milliseconds = Milli(Units.Seconds).

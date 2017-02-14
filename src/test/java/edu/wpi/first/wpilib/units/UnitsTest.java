@@ -2,17 +2,22 @@ package edu.wpi.first.wpilib.units;
 
 import org.junit.Test;
 
+import static edu.wpi.first.wpilib.units.Units.Amps;
 import static edu.wpi.first.wpilib.units.Units.Centimeters;
 import static edu.wpi.first.wpilib.units.Units.Degrees;
 import static edu.wpi.first.wpilib.units.Units.Feet;
 import static edu.wpi.first.wpilib.units.Units.Grams;
+import static edu.wpi.first.wpilib.units.Units.Horsepower;
 import static edu.wpi.first.wpilib.units.Units.Inches;
 import static edu.wpi.first.wpilib.units.Units.Kilo;
 import static edu.wpi.first.wpilib.units.Units.Kilograms;
 import static edu.wpi.first.wpilib.units.Units.Meters;
 import static edu.wpi.first.wpilib.units.Units.Milli;
+import static edu.wpi.first.wpilib.units.Units.Milliamps;
 import static edu.wpi.first.wpilib.units.Units.Millimeters;
 import static edu.wpi.first.wpilib.units.Units.Milliseconds;
+import static edu.wpi.first.wpilib.units.Units.Millivolts;
+import static edu.wpi.first.wpilib.units.Units.Milliwatts;
 import static edu.wpi.first.wpilib.units.Units.Minutes;
 import static edu.wpi.first.wpilib.units.Units.Ounces;
 import static edu.wpi.first.wpilib.units.Units.Percent;
@@ -21,6 +26,8 @@ import static edu.wpi.first.wpilib.units.Units.Radians;
 import static edu.wpi.first.wpilib.units.Units.Revolutions;
 import static edu.wpi.first.wpilib.units.Units.Seconds;
 import static edu.wpi.first.wpilib.units.Units.Value;
+import static edu.wpi.first.wpilib.units.Units.Volts;
+import static edu.wpi.first.wpilib.units.Units.Watts;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("unchecked")
@@ -28,6 +35,8 @@ public class UnitsTest {
 
     // Be accurate to 0.01%
     private static final double thresh = 1e-5;
+
+    // No need to test the base units (meters, grams, etc) because they all have a value of 1
 
 
     // Distances
@@ -111,6 +120,34 @@ public class UnitsTest {
         assertEquals(100, Percent.convert(1, Value), thresh);
     }
 
+
+    // Electric potential
+
+    @Test
+    public void testMillivolts() {
+        assertEquals(1000, Millivolts.convert(1, Volts), thresh);
+    }
+
+
+    // Electric current
+
+    @Test
+    public void testMilliamps() {
+        assertEquals(1000, Milliamps.convert(1, Amps), thresh);
+    }
+
+
+    // Power
+
+    @Test
+    public void testMilliwatts() {
+        assertEquals(1000, Milliwatts.convert(1, Watts), thresh);
+    }
+
+    @Test
+    public void testHorsepower() {
+        assertEquals(745.7, Watts.convert(1, Horsepower), thresh);
+    }
 
     // Helpers
 
