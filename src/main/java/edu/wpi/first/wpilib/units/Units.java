@@ -51,6 +51,14 @@ public final class Units {
     public static final Unit<Power> Milliwatts = Milli(Watts);
     public static final Unit<Power> Horsepower = Watts.aggregate(745.7);
 
+    // Temperature
+    public static final Unit<Temperature> Celsius = BaseUnits.Temperature;
+    public static final Unit<Temperature> Fahrenheit =
+            derive(Celsius)
+                    .toBase(f -> (f - 32) * 5 / 9.)
+                    .fromBase(c -> (c * 9. / 5) + 32)
+                    .make();
+
     /**
      * Creates a unit equal to a thousandth of the base unit, eg Milliseconds = Milli(Units.Seconds).
      */

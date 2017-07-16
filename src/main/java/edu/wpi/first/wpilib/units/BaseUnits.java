@@ -50,4 +50,6 @@ final class BaseUnits {
      */
     static final Unit<Power> Power = new Power(1);
 
+    static final Unit<Temperature> Temperature = new Temperature(x -> x, x -> x);
+
 }
