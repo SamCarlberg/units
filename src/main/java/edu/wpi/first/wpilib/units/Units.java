@@ -23,6 +23,15 @@ public final class Units {
     public static final Unit<Time> Milliseconds = Milli(Seconds);
     public static final Unit<Time> Minutes = Seconds.aggregate(60);
 
+    // Velocity
+    public static final Unit<Velocity> MetersPerSecond = BaseUnits.Velocity;
+    public static final Unit<Velocity> FeetPerSecond = MetersPerSecond.splitInto(3.28084);
+    public static final Unit<Velocity> InchesPerSecond = FeetPerSecond.splitInto(12);
+
+    // Acceleration
+    public static final Unit<Acceleration> MetersPerSecondPerSecond = BaseUnits.Acceleration;
+    public static final Unit<Acceleration> Gs = MetersPerSecondPerSecond.aggregate(9.807);
+
     // Mass
     public static final Unit<Mass> Grams = BaseUnits.Mass;
     public static final Unit<Mass> Kilograms = Kilo(Grams);

@@ -6,12 +6,15 @@ import static edu.wpi.first.wpilib.units.Units.Amps;
 import static edu.wpi.first.wpilib.units.Units.Centimeters;
 import static edu.wpi.first.wpilib.units.Units.Degrees;
 import static edu.wpi.first.wpilib.units.Units.Feet;
+import static edu.wpi.first.wpilib.units.Units.FeetPerSecond;
 import static edu.wpi.first.wpilib.units.Units.Grams;
 import static edu.wpi.first.wpilib.units.Units.Horsepower;
 import static edu.wpi.first.wpilib.units.Units.Inches;
+import static edu.wpi.first.wpilib.units.Units.InchesPerSecond;
 import static edu.wpi.first.wpilib.units.Units.Kilo;
 import static edu.wpi.first.wpilib.units.Units.Kilograms;
 import static edu.wpi.first.wpilib.units.Units.Meters;
+import static edu.wpi.first.wpilib.units.Units.MetersPerSecond;
 import static edu.wpi.first.wpilib.units.Units.Milli;
 import static edu.wpi.first.wpilib.units.Units.Milliamps;
 import static edu.wpi.first.wpilib.units.Units.Millimeters;
@@ -64,6 +67,16 @@ public class UnitsTest {
     public void testFeet() {
         assertEquals(3.28084, Feet.convert(1, Meters), thresh);
         assertEquals(1 / 12.0, Feet.convert(1, Inches), thresh);
+    }
+
+
+    // Velocities
+
+    @Test
+    public void testFeetPerSecond() {
+        assertEquals(3.28084, FeetPerSecond.convert(1, MetersPerSecond), thresh);
+        assertEquals(1 / 3.28084, MetersPerSecond.convert(1, FeetPerSecond), thresh);
+        assertEquals(12, InchesPerSecond.convert(1, FeetPerSecond), thresh);
     }
 
 

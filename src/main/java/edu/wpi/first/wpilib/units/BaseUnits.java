@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.Vector;
+
 /**
  * The base units of measure. These are not necessarily the SI standard units; notably, the <i>gram</i> is
  * used as a base unit rather than the SI standard <i>kilogram</i>.
@@ -19,6 +21,16 @@ final class BaseUnits {
      * The standard unit of time, seconds.
      */
     static final Unit<Time> Time = new Time(1);
+
+    /**
+     * The standard unit of velocity, meters per second.
+     */
+    static final Unit<Velocity> Velocity = new Velocity(1);
+
+    /**
+     * The standard unit of acceleration, meters per second per second (m/s<sup>2</sup>).
+     */
+    static final Unit<Acceleration> Acceleration = new Acceleration(1);
 
     /**
      * The standard unit of mass, grams.
