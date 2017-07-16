@@ -9,12 +9,12 @@ import edu.wpi.first.wpilib.units.Units;
  */
 public class Fahrenheit extends Measure<Temperature> {
 
-    private Fahrenheit(double magnitude) {
-        super(magnitude, Units.Celsius);
-    }
+  private Fahrenheit(double magnitude) {
+    super(magnitude, Units.Celsius);
+  }
 
-    public static Fahrenheit of(double magnitude) {
-        return new Fahrenheit(magnitude);
-    }
+  public static Fahrenheit of(double magnitude) {
+    return new Fahrenheit(magnitude);
+  }
 
 }

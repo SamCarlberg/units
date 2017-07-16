@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Inches extends Measure<Distance> {
 
-    private Inches(double magnitude) {
-        super(magnitude, Units.Inches);
-    }
+  private Inches(double magnitude) {
+    super(magnitude, Units.Inches);
+  }
 
-    public static Inches of(double magnitude) {
-        return new Inches(magnitude);
-    }
+  public static Inches of(double magnitude) {
+    return new Inches(magnitude);
+  }
 
 }

@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Millimeters extends Measure<Distance> {
 
-    private Millimeters(double magnitude) {
-        super(magnitude, Units.Millimeters);
-    }
+  private Millimeters(double magnitude) {
+    super(magnitude, Units.Millimeters);
+  }
 
-    public static Millimeters of(double magnitude) {
-        return new Millimeters(magnitude);
-    }
+  public static Millimeters of(double magnitude) {
+    return new Millimeters(magnitude);
+  }
 
 }

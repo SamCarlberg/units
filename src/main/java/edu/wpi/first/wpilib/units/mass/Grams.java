@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Grams extends Measure<Mass> {
 
-    private Grams(double magnitude) {
-        super(magnitude, Units.Grams);
-    }
+  private Grams(double magnitude) {
+    super(magnitude, Units.Grams);
+  }
 
-    public static Grams of(double magnitude) {
-        return new Grams(magnitude);
-    }
+  public static Grams of(double magnitude) {
+    return new Grams(magnitude);
+  }
 
 }

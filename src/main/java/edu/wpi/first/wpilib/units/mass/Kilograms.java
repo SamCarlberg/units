@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Kilograms extends Measure<Mass> {
 
-    private Kilograms(double magnitude) {
-        super(magnitude, Units.Kilograms);
-    }
+  private Kilograms(double magnitude) {
+    super(magnitude, Units.Kilograms);
+  }
 
-    public static Kilograms of(double magnitude) {
-        return new Kilograms(magnitude);
-    }
+  public static Kilograms of(double magnitude) {
+    return new Kilograms(magnitude);
+  }
 
 }

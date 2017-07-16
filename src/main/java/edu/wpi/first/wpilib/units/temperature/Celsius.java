@@ -9,12 +9,12 @@ import edu.wpi.first.wpilib.units.Units;
  */
 public class Celsius extends Measure<Temperature> {
 
-    private Celsius(double magnitude) {
-        super(magnitude, Units.Celsius);
-    }
+  private Celsius(double magnitude) {
+    super(magnitude, Units.Celsius);
+  }
 
-    public static Celsius of(double magnitude) {
-        return new Celsius(magnitude);
-    }
+  public static Celsius of(double magnitude) {
+    return new Celsius(magnitude);
+  }
 
 }

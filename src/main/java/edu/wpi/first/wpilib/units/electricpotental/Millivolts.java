@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Millivolts extends Measure<ElectricPotential> {
 
-    private Millivolts(double magnitude) {
-        super(magnitude, Units.Millivolts);
-    }
+  private Millivolts(double magnitude) {
+    super(magnitude, Units.Millivolts);
+  }
 
-    public static Millivolts of(double magnitude) {
-        return new Millivolts(magnitude);
-    }
+  public static Millivolts of(double magnitude) {
+    return new Millivolts(magnitude);
+  }
 
 }

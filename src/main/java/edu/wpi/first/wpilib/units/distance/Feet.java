@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Feet extends Measure<Distance> {
 
-    private Feet(double magnitude) {
-        super(magnitude, Units.Feet);
-    }
+  private Feet(double magnitude) {
+    super(magnitude, Units.Feet);
+  }
 
-    public static Feet of(double magnitude) {
-        return new Feet(magnitude);
-    }
+  public static Feet of(double magnitude) {
+    return new Feet(magnitude);
+  }
 
 }

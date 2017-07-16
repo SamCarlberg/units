@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Radians extends Measure<Angle> {
 
-    private Radians(double magnitude) {
-        super(magnitude, Units.Radians);
-    }
+  private Radians(double magnitude) {
+    super(magnitude, Units.Radians);
+  }
 
-    public static Radians of(double magnitude) {
-        return new Radians(magnitude);
-    }
+  public static Radians of(double magnitude) {
+    return new Radians(magnitude);
+  }
 
 }

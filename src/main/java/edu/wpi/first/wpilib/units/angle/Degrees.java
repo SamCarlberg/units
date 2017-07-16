@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Degrees extends Measure<Angle> {
 
-    private Degrees(double magnitude) {
-        super(magnitude, Units.Degrees);
-    }
+  private Degrees(double magnitude) {
+    super(magnitude, Units.Degrees);
+  }
 
-    public static Degrees of(double magnitude) {
-        return new Degrees(magnitude);
-    }
+  public static Degrees of(double magnitude) {
+    return new Degrees(magnitude);
+  }
 
 }

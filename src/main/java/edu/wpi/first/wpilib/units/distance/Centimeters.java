@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Centimeters extends Measure<Distance> {
 
-    private Centimeters(double magnitude) {
-        super(magnitude, Units.Centimeters);
-    }
+  private Centimeters(double magnitude) {
+    super(magnitude, Units.Centimeters);
+  }
 
-    public static Centimeters of(double magnitude) {
-        return new Centimeters(magnitude);
-    }
+  public static Centimeters of(double magnitude) {
+    return new Centimeters(magnitude);
+  }
 
 }

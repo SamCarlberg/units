@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Revolutions extends Measure<Angle> {
 
-    private Revolutions(double magnitude) {
-        super(magnitude, Units.Revolutions);
-    }
+  private Revolutions(double magnitude) {
+    super(magnitude, Units.Revolutions);
+  }
 
-    public static Revolutions of(double magnitude) {
-        return new Revolutions(magnitude);
-    }
+  public static Revolutions of(double magnitude) {
+    return new Revolutions(magnitude);
+  }
 
 }

@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Pounds extends Measure<Mass> {
 
-    private Pounds(double magnitude) {
-        super(magnitude, Units.Pounds);
-    }
+  private Pounds(double magnitude) {
+    super(magnitude, Units.Pounds);
+  }
 
-    public static Pounds of(double magnitude) {
-        return new Pounds(magnitude);
-    }
+  public static Pounds of(double magnitude) {
+    return new Pounds(magnitude);
+  }
 
 }

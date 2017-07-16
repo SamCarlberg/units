@@ -11,14 +11,14 @@ import static org.junit.Assert.assertEquals;
 
 public class HelperTest {
 
-    @Test
-    public void testWatts() {
-        assertEquals(Watts.of(10), Watts.of(Volts.of(100), Amps.of(0.1)));
-    }
+  @Test
+  public void testWatts() {
+    assertEquals(Watts.of(10), Watts.of(Volts.of(100), Amps.of(0.1)));
+  }
 
-    @Test
-    public void testMilliwatts() {
-        assertEquals(Milliwatts.of(10_000), Milliwatts.of(Volts.of(100), Amps.of(0.1)));
-    }
+  @Test
+  public void testMilliwatts() {
+    assertEquals(Milliwatts.of(10_000), Milliwatts.of(Volts.of(100), Amps.of(0.1)));
+  }
 
 }

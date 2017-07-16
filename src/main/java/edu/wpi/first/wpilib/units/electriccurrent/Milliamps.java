@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Milliamps extends Measure<ElectricCurrent> {
 
-    private Milliamps(double magnitude) {
-        super(magnitude, Units.Milliamps);
-    }
+  private Milliamps(double magnitude) {
+    super(magnitude, Units.Milliamps);
+  }
 
-    public static Milliamps of(double magnitude) {
-        return new Milliamps(magnitude);
-    }
+  public static Milliamps of(double magnitude) {
+    return new Milliamps(magnitude);
+  }
 
 }

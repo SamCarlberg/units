@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Minutes extends Measure<Time> {
 
-    private Minutes(double magnitude) {
-        super(magnitude, Units.Minutes);
-    }
+  private Minutes(double magnitude) {
+    super(magnitude, Units.Minutes);
+  }
 
-    public static Minutes of(double magnitude) {
-        return new Minutes(magnitude);
-    }
+  public static Minutes of(double magnitude) {
+    return new Minutes(magnitude);
+  }
 
 }

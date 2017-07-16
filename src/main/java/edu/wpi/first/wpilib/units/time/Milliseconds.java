@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Milliseconds extends Measure<Time> {
 
-    private Milliseconds(double magnitude) {
-        super(magnitude, Units.Milliseconds);
-    }
+  private Milliseconds(double magnitude) {
+    super(magnitude, Units.Milliseconds);
+  }
 
-    public static Milliseconds of(double magnitude) {
-        return new Milliseconds(magnitude);
-    }
+  public static Milliseconds of(double magnitude) {
+    return new Milliseconds(magnitude);
+  }
 
 }

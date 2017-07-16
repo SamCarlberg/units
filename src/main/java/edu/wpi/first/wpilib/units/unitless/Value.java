@@ -6,12 +6,12 @@ import edu.wpi.first.wpilib.units.Units;
 
 public class Value extends Measure<Unitless> {
 
-    private Value(double magnitude) {
-        super(magnitude, Units.Value);
-    }
+  private Value(double magnitude) {
+    super(magnitude, Units.Value);
+  }
 
-    public static Value of(double magnitude) {
-        return new Value(magnitude);
-    }
+  public static Value of(double magnitude) {
+    return new Value(magnitude);
+  }
 
 }
