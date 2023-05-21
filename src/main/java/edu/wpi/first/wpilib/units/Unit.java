@@ -116,6 +116,22 @@ public class Unit<U extends Unit<U>> {
     return aggregate(1 / amount);
   }
 
+  /**
+   * Creates a velocity unit derived from this one. Can be chained to denote velocity, acceleration, jerk, etc.
+   *
+   * <pre>
+   *   Meters.per(Second) // => linear velocity
+   *   Kilograms.per(Second) // => mass flow
+   *   Feet.per(Second).per(Second).of(32) // roughly 1G of acceleration
+   * </pre>
+   *
+   * @param period the time period of the velocity, such as seconds or milliseconds
+   * @return a
+   */
+  public Velocity<U> per(Time period) {
+    return Velocity.combine(this, period);
+  }
+
   public boolean equivalent(Unit<U> other) {
     return Math.abs(this.fromBaseConverter.apply(1) - other.fromBaseConverter.apply(1)) <= Measure.EQUIVALENCE_THRESHOLD &&
         Math.abs(this.toBaseConverter.apply(1) - other.toBaseConverter.apply(1)) <= Measure.EQUIVALENCE_THRESHOLD;

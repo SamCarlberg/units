@@ -15,11 +15,4 @@ public class Distance extends Unit<Distance> {
   Distance(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Distance.class, toBaseConverter, fromBaseConverter);
   }
-
-  public Velocity per(Unit<Time> period) {
-    return new Velocity(
-        (double newUnitValue) -> getConverterToBase().apply(newUnitValue) / period.getConverterToBase().apply(1),
-        (double baseUnitValue) -> getConverterFromBase().apply(baseUnitValue) / period.getConverterFromBase().apply(1)
-    );
-  }
 }

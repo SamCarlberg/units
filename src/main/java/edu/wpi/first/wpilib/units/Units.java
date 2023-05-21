@@ -27,13 +27,13 @@ public final class Units {
   public static final Time Minute = Minutes; // singularized alias
 
   // Velocity
-  public static final Velocity MetersPerSecond = Meters.per(Seconds);
-  public static final Velocity FeetPerSecond = Feet.per(Seconds);
-  public static final Velocity InchesPerSecond = Inches.per(Seconds);
+  public static final Velocity<Distance> MetersPerSecond = Meters.per(Second);
+  public static final Velocity<Distance> FeetPerSecond = Feet.per(Second);
+  public static final Velocity<Distance> InchesPerSecond = Inches.per(Second);
 
   // Acceleration
-  public static final Acceleration MetersPerSecondPerSecond = BaseUnits.Acceleration;
-  public static final Acceleration Gs = MetersPerSecondPerSecond.aggregate(9.807);
+  public static final Velocity<Velocity<Distance>> MetersPerSecondPerSecond = MetersPerSecond.per(Second);
+  public static final Velocity<Velocity<Distance>> Gs = MetersPerSecondPerSecond.aggregate(9.807);
 
   // Mass
   public static final Mass Grams = BaseUnits.Mass;

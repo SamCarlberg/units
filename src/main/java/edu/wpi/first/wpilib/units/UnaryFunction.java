@@ -34,6 +34,13 @@ public interface UnaryFunction {
   }
 
   /**
+   * g(x) = f(x) * k
+   */
+  default UnaryFunction mult(double multiplier) {
+    return x -> this.apply(x) * multiplier;
+  }
+
+  /**
    * h(x) = f(x) / g(x)
    */
   default UnaryFunction div(UnaryFunction divisor) {
@@ -52,11 +59,22 @@ public interface UnaryFunction {
   }
 
   /**
+   * g(x) * f(x) / k
+   */
+  default UnaryFunction div(double divisor) {
+    return x -> this.apply(x) / divisor;
+  }
+
+  /**
    * h(x) = f(x) ^ g(x)
    */
   default UnaryFunction exp(UnaryFunction exponent) {
     Objects.requireNonNull(exponent, "An exponent function must be provided");
 
     return x -> Math.pow(this.apply(x), exponent.apply(x));
+  }
+
+  default UnaryFunction exp(double exponent) {
+    return x -> Math.pow(this.apply(x), exponent);
   }
 }
