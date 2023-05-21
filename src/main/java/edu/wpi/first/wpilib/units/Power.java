@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Power extends Unit<Power> {
 
 
@@ -9,7 +7,7 @@ public class Power extends Unit<Power> {
     super(Power.class, baseUnitEquivalent);
   }
 
-  Power(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  Power(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Power.class, toBaseConverter, fromBaseConverter);
   }
 

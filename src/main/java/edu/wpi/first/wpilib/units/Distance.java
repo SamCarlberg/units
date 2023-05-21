@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Distance extends Unit<Distance> {
 
   /**
@@ -14,14 +12,14 @@ public class Distance extends Unit<Distance> {
     super(Distance.class, baseUnitEquivalent);
   }
 
-  Distance(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  Distance(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Distance.class, toBaseConverter, fromBaseConverter);
   }
 
   public Velocity per(Unit<Time> period) {
     return new Velocity(
-        (double newUnitValue) -> getConverterToBase().applyAsDouble(newUnitValue) / period.getConverterToBase().applyAsDouble(newUnitValue),
-        (double baseUnitValue) -> getConverterFromBase().applyAsDouble(baseUnitValue) / period.getConverterFromBase().applyAsDouble(baseUnitValue)
+        (double newUnitValue) -> getConverterToBase().apply(newUnitValue) / period.getConverterToBase().apply(1),
+        (double baseUnitValue) -> getConverterFromBase().apply(baseUnitValue) / period.getConverterFromBase().apply(1)
     );
   }
 }

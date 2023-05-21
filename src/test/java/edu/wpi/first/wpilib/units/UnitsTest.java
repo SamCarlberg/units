@@ -11,10 +11,23 @@ public class UnitsTest {
   // Be accurate to 0.01%
   private static final double thresh = 1e-5;
 
-  // No need to test the base units (meters, grams, etc) because they all have a value of 1
+  void testBaseUnit(Unit<?> baseUnit) {
+    assertEquals(0, baseUnit.of(0).baseUnitMagnitude(), 0);
+    assertEquals(1, baseUnit.of(1).baseUnitMagnitude(), 0);
+    assertEquals(-1, baseUnit.of(-1).baseUnitMagnitude(), 0);
+    assertEquals(100, baseUnit.of(100).baseUnitMagnitude(), 0);
+    assertEquals(3.14159, baseUnit.of(3.14159).baseUnitMagnitude(), 0);
+    assertEquals(Float.MAX_VALUE, baseUnit.of(Float.MAX_VALUE).baseUnitMagnitude(), 0);
+    assertEquals(Float.MIN_VALUE, baseUnit.of(Float.MIN_VALUE).baseUnitMagnitude(), 0);
+  }
 
 
   // Distances
+
+  @Test
+  public void testMeters() {
+    testBaseUnit(Meters);
+  }
 
   @Test
   public void testMillimeters() {
@@ -45,6 +58,11 @@ public class UnitsTest {
   // Velocities
 
   @Test
+  public void testMetersPerSecond() {
+    testBaseUnit(MetersPerSecond);
+  }
+
+  @Test
   public void testFeetPerSecond() {
     assertEquals(3.28084, FeetPerSecond.convert(1, MetersPerSecond), thresh);
     assertEquals(1 / 3.28084, MetersPerSecond.convert(1, FeetPerSecond), thresh);
@@ -52,6 +70,11 @@ public class UnitsTest {
 
 
   // Time
+
+  @Test
+  public void testSeconds() {
+    testBaseUnit(Seconds);
+  }
 
   @Test
   public void testMillisecond() {
@@ -65,6 +88,11 @@ public class UnitsTest {
 
 
   // Mass
+
+  @Test
+  public void testGrams() {
+    testBaseUnit(Grams);
+  }
 
   @Test
   public void testKilograms() {
@@ -85,6 +113,11 @@ public class UnitsTest {
   // Angle
 
   @Test
+  public void testRevolutions() {
+    testBaseUnit(Revolutions);
+  }
+
+  @Test
   public void testRadians() {
     assertEquals(2 * Math.PI, Radians.convert(1, Revolutions), thresh);
     assertEquals(2 * Math.PI, Radians.convert(360, Degrees), thresh);
@@ -100,12 +133,22 @@ public class UnitsTest {
   // Unitless
 
   @Test
+  public void testValue() {
+    testBaseUnit(Value);
+  }
+
+  @Test
   public void testPercent() {
     assertEquals(100, Percent.convert(1, Value), thresh);
   }
 
 
   // Electric potential
+
+  @Test
+  public void testVolts() {
+    testBaseUnit(Volts);
+  }
 
   @Test
   public void testMillivolts() {
@@ -116,12 +159,22 @@ public class UnitsTest {
   // Electric current
 
   @Test
+  public void testAmps() {
+    testBaseUnit(Amps);
+  }
+
+  @Test
   public void testMilliamps() {
     assertEquals(1000, Milliamps.convert(1, Amps), thresh);
   }
 
 
   // Power
+
+  @Test
+  public void testWatts() {
+    testBaseUnit(Watts);
+  }
 
   @Test
   public void testMilliwatts() {
@@ -134,6 +187,11 @@ public class UnitsTest {
   }
 
   // Temperature
+
+  @Test
+  public void testKelvin() {
+    testBaseUnit(Kelvin);
+  }
 
   @Test
   public void testCelsius() {

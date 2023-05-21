@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Angle extends Unit<Angle> {
 
   /**
@@ -14,7 +12,7 @@ public class Angle extends Unit<Angle> {
     super(Angle.class, baseUnitEquivalent);
   }
 
-  Angle(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  Angle(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Angle.class, toBaseConverter, fromBaseConverter);
   }
 

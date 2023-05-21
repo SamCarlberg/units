@@ -3,8 +3,6 @@ package edu.wpi.first.wpilib.units;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
-import java.util.function.DoubleUnaryOperator;
-
 public final class Units {
 
   private Units() {
@@ -22,11 +20,14 @@ public final class Units {
 
   // Time
   public static final Time Seconds = BaseUnits.Time;
+  public static final Time Second = Seconds; // singularized alias
   public static final Time Milliseconds = Milli(Seconds);
+  public static final Time Millisecond = Milliseconds; // singularized alias
   public static final Time Minutes = Seconds.aggregate(60);
+  public static final Time Minute = Minutes; // singularized alias
 
   // Velocity
-  public static final Velocity MetersPerSecond = BaseUnits.Velocity;
+  public static final Velocity MetersPerSecond = Meters.per(Seconds);
   public static final Velocity FeetPerSecond = Feet.per(Seconds);
   public static final Velocity InchesPerSecond = Inches.per(Seconds);
 
@@ -96,8 +97,8 @@ public final class Units {
   public static final class UnitBuilder<U extends Unit<U>> {
 
     private final U base;
-    private DoubleUnaryOperator fromBase;
-    private DoubleUnaryOperator toBase;
+    private UnaryFunction fromBase;
+    private UnaryFunction toBase;
 
     private UnitBuilder(U base) {
       this.base = Objects.requireNonNull(base, "Base unit cannot be null");
@@ -138,12 +139,12 @@ public final class Units {
       return new MappingBuilder(minBase, maxBase);
     }
 
-    public UnitBuilder<U> fromBase(DoubleUnaryOperator fromBase) {
+    public UnitBuilder<U> fromBase(UnaryFunction fromBase) {
       this.fromBase = Objects.requireNonNull(fromBase, "fromBase function cannot be null");
       return this;
     }
 
-    public UnitBuilder<U> toBase(DoubleUnaryOperator toBase) {
+    public UnitBuilder<U> toBase(UnaryFunction toBase) {
       this.toBase = Objects.requireNonNull(toBase, "toBase function cannot be null");
       return this;
     }
@@ -152,10 +153,10 @@ public final class Units {
       Objects.requireNonNull(fromBase, "fromBase function was not set");
       Objects.requireNonNull(toBase, "toBase function was not set");
       try {
-        Constructor<U> ctor = base.baseType.getDeclaredConstructor(DoubleUnaryOperator.class, DoubleUnaryOperator.class);
+        Constructor<U> ctor = base.baseType.getDeclaredConstructor(UnaryFunction.class, UnaryFunction.class);
         return (U) ctor.newInstance(
-            toBase.andThen(base.getConverterToBase()), // (derived) -> derived to derivation base, then to true base
-            base.getConverterFromBase().andThen(fromBase) // (base) -> true base to derivation base, then to derived
+            toBase.pipeTo(base.getConverterToBase()), // (derived) -> derived to derivation base, then to true base
+            base.getConverterFromBase().pipeTo(fromBase) // (base) -> true base to derivation base, then to derived
         );
       } catch (InstantiationException e) {
         throw new RuntimeException(e);

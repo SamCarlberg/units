@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Mass extends Unit<Mass> {
 
   /**
@@ -14,7 +12,7 @@ public class Mass extends Unit<Mass> {
     super(Mass.class, baseUnitEquivalent);
   }
 
-  Mass(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  Mass(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Mass.class, toBaseConverter, fromBaseConverter);
   }
 

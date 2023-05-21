@@ -83,7 +83,7 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
    * Gets the magnitude of this measure in terms of the base unit.
    */
   default double baseUnitMagnitude() {
-    return unit().getConverterToBase().applyAsDouble(magnitude());
+    return unit().getConverterToBase().apply(magnitude());
   }
 
   default boolean isEquivalent(Measure<U> other) {

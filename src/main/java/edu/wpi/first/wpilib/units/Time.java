@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Time extends Unit<Time> {
 
   /**
@@ -14,7 +12,7 @@ public class Time extends Unit<Time> {
     super(Time.class, baseUnitEquivalent);
   }
 
-  Time(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  Time(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Time.class, toBaseConverter, fromBaseConverter);
   }
 

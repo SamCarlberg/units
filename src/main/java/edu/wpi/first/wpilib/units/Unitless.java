@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Unitless extends Unit<Unitless> {
 
   /**
@@ -14,7 +12,7 @@ public class Unitless extends Unit<Unitless> {
     super(Unitless.class, baseUnitEquivalent);
   }
 
-  Unitless(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  Unitless(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     super(Unitless.class, toBaseConverter, fromBaseConverter);
   }
 

@@ -3,8 +3,6 @@ package edu.wpi.first.wpilib.units;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
-import java.util.function.DoubleUnaryOperator;
-
 /**
  * A unit is some unit of measurement that defines a quantity, such as grams, meters, or seconds.
  *
@@ -12,8 +10,8 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class Unit<U extends Unit<U>> {
 
-  private final DoubleUnaryOperator toBaseConverter;
-  private final DoubleUnaryOperator fromBaseConverter;
+  private final UnaryFunction toBaseConverter;
+  private final UnaryFunction fromBaseConverter;
 
   final Class<U> baseType; // package-private for the builder
 
@@ -24,7 +22,7 @@ public class Unit<U extends Unit<U>> {
    * @param toBaseConverter   a function for converting units of this type to the base unit
    * @param fromBaseConverter a function for converting units of the base unit to this one
    */
-  protected Unit(Class<U> baseType, DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  protected Unit(Class<U> baseType, UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
     this.baseType = baseType;
     this.toBaseConverter = Objects.requireNonNull(toBaseConverter);
     this.fromBaseConverter = Objects.requireNonNull(fromBaseConverter);
@@ -48,14 +46,14 @@ public class Unit<U extends Unit<U>> {
    * @param otherUnit the unit to convert the value to
    */
   public double convert(double value, Unit<U> otherUnit) {
-    return otherUnit.toBaseConverter.andThen(this.fromBaseConverter).applyAsDouble(value);
+    return otherUnit.toBaseConverter.pipeTo(this.fromBaseConverter).apply(value);
   }
 
-  public DoubleUnaryOperator getConverterToBase() {
+  public UnaryFunction getConverterToBase() {
     return toBaseConverter;
   }
 
-  public DoubleUnaryOperator getConverterFromBase() {
+  public UnaryFunction getConverterFromBase() {
     return fromBaseConverter;
   }
 
@@ -84,7 +82,7 @@ public class Unit<U extends Unit<U>> {
     Constructor<U> ctor = null;
 
     try {
-      ctor = baseType.getDeclaredConstructor(DoubleUnaryOperator.class, DoubleUnaryOperator.class);
+      ctor = baseType.getDeclaredConstructor(UnaryFunction.class, UnaryFunction.class);
     } catch (NoSuchMethodException e) {
       throw new RuntimeException(
           "Base unit type " + baseType.getName() + " does not have a constructor that takes base unit conversion functions",
@@ -94,8 +92,8 @@ public class Unit<U extends Unit<U>> {
 
     try {
       return ctor.newInstance(
-          this.toBaseConverter.andThen(x -> x * amount),
-          this.fromBaseConverter.andThen(x -> x / amount)
+          this.toBaseConverter.pipeTo(x -> x * amount),
+          this.fromBaseConverter.pipeTo(x -> x / amount)
       );
     } catch (InstantiationException e) {
       throw new RuntimeException("Class " + baseType.getName() + " cannot be instantiated", e);
@@ -119,8 +117,8 @@ public class Unit<U extends Unit<U>> {
   }
 
   public boolean equivalent(Unit<U> other) {
-    return Math.abs(this.fromBaseConverter.applyAsDouble(1) - other.fromBaseConverter.applyAsDouble(1)) <= Measure.EQUIVALENCE_THRESHOLD &&
-        Math.abs(this.toBaseConverter.applyAsDouble(1) - other.toBaseConverter.applyAsDouble(1)) <= Measure.EQUIVALENCE_THRESHOLD;
+    return Math.abs(this.fromBaseConverter.apply(1) - other.fromBaseConverter.apply(1)) <= Measure.EQUIVALENCE_THRESHOLD &&
+        Math.abs(this.toBaseConverter.apply(1) - other.toBaseConverter.apply(1)) <= Measure.EQUIVALENCE_THRESHOLD;
   }
 
 }
