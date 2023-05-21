@@ -57,7 +57,7 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
       // Same unit (eg inches, seconds, etc). No conversion necessary.
       return magnitude;
     } else {
-      return unit.convert(magnitude, this.unit);
+      return unit.convert(this.magnitude, this.unit);
     }
   }
 
@@ -68,6 +68,10 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
    */
   public Measure<U> times(double multiplier) {
     return new Measure<>(magnitude * multiplier, unit);
+  }
+
+  public Measure<U> times(Measure<? extends Unitless> scalar) {
+    return times(scalar.baseUnitMagnitude());
   }
 
   /**
@@ -82,11 +86,15 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
     return times(1 / divisor);
   }
 
+  public Measure<U> divide(Measure<? extends Unitless> scalar) {
+    return divide(scalar.baseUnitMagnitude());
+  }
+
   /**
    * Adds another measure to this one. The resulting measure has the same unit as this one.
    */
   public Measure<U> add(Measure<U> other) {
-    return new Measure<>(magnitude + unit.convert(other.magnitude(), other.unit()), unit);
+    return new Measure<>(magnitude + other.as(this.unit), unit);
   }
 
   /**

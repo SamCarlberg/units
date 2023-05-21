@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.function.DoubleUnaryOperator;
+
 public class Time extends Unit<Time> {
 
   /**
@@ -9,7 +11,11 @@ public class Time extends Unit<Time> {
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
   Time(double baseUnitEquivalent) {
-    super(baseUnitEquivalent);
+    super(Time.class, baseUnitEquivalent);
+  }
+
+  Time(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+    super(Time.class, toBaseConverter, fromBaseConverter);
   }
 
 }

@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.function.DoubleUnaryOperator;
+
 public class Mass extends Unit<Mass> {
 
   /**
@@ -9,7 +11,11 @@ public class Mass extends Unit<Mass> {
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
   Mass(double baseUnitEquivalent) {
-    super(baseUnitEquivalent);
+    super(Mass.class, baseUnitEquivalent);
+  }
+
+  Mass(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+    super(Mass.class, toBaseConverter, fromBaseConverter);
   }
 
 }

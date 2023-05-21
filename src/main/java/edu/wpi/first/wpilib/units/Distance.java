@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.function.DoubleUnaryOperator;
+
 public class Distance extends Unit<Distance> {
 
   /**
@@ -9,7 +11,17 @@ public class Distance extends Unit<Distance> {
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
   Distance(double baseUnitEquivalent) {
-    super(baseUnitEquivalent);
+    super(Distance.class, baseUnitEquivalent);
   }
 
+  Distance(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+    super(Distance.class, toBaseConverter, fromBaseConverter);
+  }
+
+  public <T extends Unit<Time>> Velocity per(T period) {
+    return new Velocity(
+        (double newUnitValue) -> getConverterToBase().applyAsDouble(newUnitValue) / period.getConverterToBase().applyAsDouble(newUnitValue),
+        (double baseUnitValue) -> getConverterFromBase().applyAsDouble(baseUnitValue) / period.getConverterFromBase().applyAsDouble(baseUnitValue)
+    );
+  }
 }

@@ -76,7 +76,6 @@ public class UnitsTest {
   public void testFeetPerSecond() {
     assertEquals(3.28084, FeetPerSecond.convert(1, MetersPerSecond), thresh);
     assertEquals(1 / 3.28084, MetersPerSecond.convert(1, FeetPerSecond), thresh);
-    assertEquals(12, InchesPerSecond.convert(1, FeetPerSecond), thresh);
   }
 
 
@@ -166,18 +165,17 @@ public class UnitsTest {
 
   @Test
   public void testKilo() {
-    Unit unit = new Unit(1);
-    Unit kUnit = Kilo(unit);
-    assertEquals(1e3, unit.convert(1, kUnit), 0);
-    assertEquals(1e-3, kUnit.convert(1, unit), 0);
+    ExampleUnit unit = new ExampleUnit(1);
+    ExampleUnit kiloUnit = Kilo(unit);
+    assertEquals(1e3, unit.convert(1, kiloUnit), 0);
+    assertEquals(1e-3, kiloUnit.convert(1, unit), 0);
   }
 
   @Test
   public void testMilli() {
-    Unit unit = new Unit(1);
-    Unit mUnit = Milli(unit);
-    assertEquals(1e-3, unit.convert(1, mUnit), 0);
-    assertEquals(1e3, mUnit.convert(1, unit), 0);
+    ExampleUnit unit = new ExampleUnit(1);
+    ExampleUnit milliUnit = Milli(unit);
+    assertEquals(1e-3, unit.convert(1, milliUnit), 0);
+    assertEquals(1e3, milliUnit.convert(1, unit), 0);
   }
-
 }

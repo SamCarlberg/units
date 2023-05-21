@@ -4,32 +4,30 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings("unchecked") // Don't care about the generic types
 public class UnitTest { // :)
-
 
   @Test
   public void testAggregate() {
-    Unit u = new Unit(1);
-    Unit m = u.aggregate(10);
-    assertEquals(1, m.convert(10, u), 0);
-    assertEquals(1, u.convert(0.1, m), 0);
+    ExampleUnit base = new ExampleUnit(1);
+    ExampleUnit tens = base.aggregate(10);
+    assertEquals(1, tens.of(0.1).as(base), 0);
+    assertEquals(10, tens.of(1).as(base), 0);
   }
 
   @Test
   public void testSplitInto() {
-    Unit u = new Unit(1);
-    Unit d = u.splitInto(10);
-    assertEquals(1, d.convert(0.1, u), 0);
-    assertEquals(1, u.convert(10, d), 0);
+    ExampleUnit base = new ExampleUnit(1);
+    ExampleUnit tenths = base.splitInto(10);
+    assertEquals(1, tenths.of(10).as(base), 0);
+    assertEquals(0.1, tenths.of(1).as(base), 0);
   }
 
   @Test
   public void testOf() {
-    Unit u = new Unit(1);
-    Measure m = u.of(5);
-    assertEquals(5, m.magnitude(), 0);
-    assertEquals(u, m.unit());
+    ExampleUnit u = new ExampleUnit(1);
+    Measure<ExampleUnit> fiveOfSomething = u.of(5);
+    assertEquals(5, fiveOfSomething.magnitude(), 0);
+    assertEquals(u, fiveOfSomething.unit());
   }
 
 }

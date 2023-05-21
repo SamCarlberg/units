@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
@@ -13,13 +15,17 @@ public class Unit<U extends Unit<U>> {
   private final DoubleUnaryOperator toBaseConverter;
   private final DoubleUnaryOperator fromBaseConverter;
 
+  final Class<U> baseType; // package-private for the builder
+
   /**
    * Creates a new unit defined by its relationship to some base unit.
    *
+   * @param baseType
    * @param toBaseConverter   a function for converting units of this type to the base unit
    * @param fromBaseConverter a function for converting units of the base unit to this one
    */
-  protected Unit(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+  protected Unit(Class<U> baseType, DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+    this.baseType = baseType;
     this.toBaseConverter = Objects.requireNonNull(toBaseConverter);
     this.fromBaseConverter = Objects.requireNonNull(fromBaseConverter);
   }
@@ -27,12 +33,12 @@ public class Unit<U extends Unit<U>> {
   /**
    * Creates a new unit with the given name and multiplier to the base unit.
    *
+   * @param baseType
    * @param baseUnitEquivalent the multiplier to convert this unit to the base unit of this type. For example,
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
-  protected Unit(double baseUnitEquivalent) {
-    this(x -> x * baseUnitEquivalent,
-        x -> x / baseUnitEquivalent);
+  protected Unit(Class<U> baseType, double baseUnitEquivalent) {
+    this(baseType, x -> x * baseUnitEquivalent, x -> x / baseUnitEquivalent);
   }
 
   /**
@@ -68,16 +74,36 @@ public class Unit<U extends Unit<U>> {
    *
    * @param amount the magnitude of a measure of this unit to be equivalent to a measure of magnitude 1 of
    *               the resulting unit. For example, {@code Seconds.aggregate(60)} would result in minutes.
-   *
    * @see #splitInto(double)
    */
-  public Unit<U> aggregate(double amount) {
+  public U aggregate(double amount) {
     if (amount == 1) {
       // Same units, just reuse this object.
-      return this;
+      return (U) this;
     }
-    return new Unit<>(this.toBaseConverter.andThen(x -> x * amount),
-        this.fromBaseConverter.andThen(x -> x / amount));
+    Constructor<U> ctor = null;
+
+    try {
+      ctor = baseType.getDeclaredConstructor(DoubleUnaryOperator.class, DoubleUnaryOperator.class);
+    } catch (NoSuchMethodException e) {
+      throw new RuntimeException(
+          "Base unit type " + baseType.getName() + " does not have a constructor that takes base unit conversion functions",
+          e
+      );
+    }
+
+    try {
+      return ctor.newInstance(
+          this.toBaseConverter.andThen(x -> x * amount),
+          this.fromBaseConverter.andThen(x -> x / amount)
+      );
+    } catch (InstantiationException e) {
+      throw new RuntimeException("Class " + baseType.getName() + " cannot be instantiated", e);
+    } catch (IllegalAccessException e) {
+      throw new RuntimeException("Could not access constructor " + ctor.getName(), e);
+    } catch (InvocationTargetException e) {
+      throw new RuntimeException("Constructor " + ctor.getName() + " raised an error when called!", e);
+    }
   }
 
   /**
@@ -86,11 +112,15 @@ public class Unit<U extends Unit<U>> {
    *
    * @param amount the magnitude of a measure of the resulting unit to be equivalent to a measure of magnitude 1 of
    *               this unit. For example, {@code Feet.splitInto(12)} would result in inches.
-   *
    * @see #aggregate(double)
    */
-  public Unit<U> splitInto(double amount) {
+  public U splitInto(double amount) {
     return aggregate(1 / amount);
+  }
+
+  public boolean equivalent(Unit<U> other) {
+    return Math.abs(this.fromBaseConverter.applyAsDouble(1) - other.fromBaseConverter.applyAsDouble(1)) <= Measure.EQUIVALENCE_THRESHOLD &&
+        Math.abs(this.toBaseConverter.applyAsDouble(1) - other.toBaseConverter.applyAsDouble(1)) <= Measure.EQUIVALENCE_THRESHOLD;
   }
 
 }

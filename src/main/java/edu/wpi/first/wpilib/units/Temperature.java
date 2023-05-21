@@ -6,7 +6,7 @@ public class Temperature extends Unit<Temperature> {
 
   Temperature(DoubleUnaryOperator toBaseConverter,
               DoubleUnaryOperator fromBaseConverter) {
-    super(toBaseConverter, fromBaseConverter);
+    super(Temperature.class, toBaseConverter, fromBaseConverter);
   }
 
 }

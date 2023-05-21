@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.function.DoubleUnaryOperator;
+
 public class Unitless extends Unit<Unitless> {
 
   /**
@@ -9,7 +11,11 @@ public class Unitless extends Unit<Unitless> {
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
   protected Unitless(double baseUnitEquivalent) {
-    super(baseUnitEquivalent);
+    super(Unitless.class, baseUnitEquivalent);
+  }
+
+  Unitless(DoubleUnaryOperator toBaseConverter, DoubleUnaryOperator fromBaseConverter) {
+    super(Unitless.class, toBaseConverter, fromBaseConverter);
   }
 
 }

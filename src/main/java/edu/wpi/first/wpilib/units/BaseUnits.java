@@ -13,53 +13,53 @@ final class BaseUnits {
   /**
    * The standard unit of distance, meters.
    */
-  static final Unit<Distance> Distance = new Distance(1);
+  static final Distance Distance = new Distance(1);
 
   /**
    * The standard unit of time, seconds.
    */
-  static final Unit<Time> Time = new Time(1);
+  static final Time Time = new Time(1);
 
   /**
    * The standard unit of velocity, meters per second.
    */
-  static final Unit<Velocity> Velocity = new Velocity(1);
+  static final Velocity Velocity = new Velocity(1);
 
   /**
    * The standard unit of acceleration, meters per second per second (m/s<sup>2</sup>).
    */
-  static final Unit<Acceleration> Acceleration = new Acceleration(1);
+  static final Acceleration Acceleration = new Acceleration(1);
 
   /**
    * The standard unit of mass, grams.
    */
-  static final Unit<Mass> Mass = new Mass(1);
+  static final Mass Mass = new Mass(1);
 
   /**
    * The standard unit of angles, revolutions.
    */
-  static final Unit<Angle> Angle = new Angle(1);
+  static final Angle Angle = new Angle(1);
 
   /**
    * The standard "unitless" unit.
    */
-  static final Unit<Unitless> Value = new Unitless(1);
+  static final Unitless Value = new Unitless(1);
 
   /**
    * The standard unit of electric potential, volts.
    */
-  static final Unit<ElectricPotential> ElectricPotential = new ElectricPotential(1);
+  static final ElectricPotential ElectricPotential = new ElectricPotential(1);
 
   /**
    * The standard unit of electric current, amperes.
    */
-  static final Unit<ElectricCurrent> ElectricCurrent = new ElectricCurrent(1);
+  static final ElectricCurrent ElectricCurrent = new ElectricCurrent(1);
 
   /**
    * The standard unit of power, watts.
    */
-  static final Unit<Power> Power = new Power(1);
+  static final Power Power = new Power(1);
 
-  static final Unit<Temperature> Temperature = new Temperature(x -> x, x -> x);
+  static final Temperature Temperature = new Temperature(x -> x, x -> x);
 
 }
