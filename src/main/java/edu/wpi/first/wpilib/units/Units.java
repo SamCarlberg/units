@@ -24,41 +24,41 @@ public final class Units {
   public static final Time Minutes = Seconds.aggregate(60);
 
   // Velocity
-  public static Velocity MetersPerSecond = BaseUnits.Velocity;
-  public static Velocity FeetPerSecond = Feet.per(Seconds);
-  public static Velocity InchesPerSecond = Inches.per(Seconds);
+  public static final Velocity MetersPerSecond = BaseUnits.Velocity;
+  public static final Velocity FeetPerSecond = Feet.per(Seconds);
+  public static final Velocity InchesPerSecond = Inches.per(Seconds);
 
   // Acceleration
-  public static Acceleration MetersPerSecondPerSecond = BaseUnits.Acceleration;
-  public static Acceleration Gs = MetersPerSecondPerSecond.aggregate(9.807);
+  public static final Acceleration MetersPerSecondPerSecond = BaseUnits.Acceleration;
+  public static final Acceleration Gs = MetersPerSecondPerSecond.aggregate(9.807);
 
   // Mass
-  public static Mass Grams = BaseUnits.Mass;
-  public static Mass Kilograms = Kilo(Grams);
-  public static Mass Pounds = Grams.aggregate(453.592);
-  public static Mass Ounces = Pounds.splitInto(16);
+  public static final Mass Grams = BaseUnits.Mass;
+  public static final Mass Kilograms = Kilo(Grams);
+  public static final Mass Pounds = Grams.aggregate(453.592);
+  public static final Mass Ounces = Pounds.splitInto(16);
 
   // Angle
-  public static Angle Revolutions = BaseUnits.Angle;
-  public static Angle Radians = Revolutions.splitInto(2 * Math.PI);
-  public static Angle Degrees = Revolutions.splitInto(360);
+  public static final Angle Revolutions = BaseUnits.Angle;
+  public static final Angle Radians = Revolutions.splitInto(2 * Math.PI);
+  public static final Angle Degrees = Revolutions.splitInto(360);
 
   // Unitless
-  public static Unitless Value = BaseUnits.Value;
-  public static Unitless Percent = Value.splitInto(100);
+  public static final Unitless Value = BaseUnits.Value;
+  public static final Unitless Percent = Value.splitInto(100);
 
   // Electric potential
-  public static ElectricPotential Volts = BaseUnits.ElectricPotential;
-  public static ElectricPotential Millivolts = Milli(Volts);
+  public static final ElectricPotential Volts = BaseUnits.ElectricPotential;
+  public static final ElectricPotential Millivolts = Milli(Volts);
 
   // Electric current
-  public static ElectricCurrent Amps = BaseUnits.ElectricCurrent;
-  public static ElectricCurrent Milliamps = Milli(Amps);
+  public static final ElectricCurrent Amps = BaseUnits.ElectricCurrent;
+  public static final ElectricCurrent Milliamps = Milli(Amps);
 
   // Power
-  public static Power Watts = BaseUnits.Power;
-  public static Power Milliwatts = Milli(Watts);
-  public static Power Horsepower = Watts.aggregate(745.7);
+  public static final Power Watts = BaseUnits.Power;
+  public static final Power Milliwatts = Milli(Watts);
+  public static final Power Horsepower = Watts.aggregate(745.7);
 
   // Temperature
   public static Temperature Celsius = BaseUnits.Temperature;
