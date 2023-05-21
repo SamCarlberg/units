@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
@@ -61,12 +63,16 @@ public final class Units {
   public static final Power Horsepower = Watts.aggregate(745.7);
 
   // Temperature
-  public static Temperature Celsius = BaseUnits.Temperature;
-//  public static Temperature Fahrenheit =
-//      derive(Celsius)
-//          .toBase(f -> (f - 32) * 5 / 9.)
-//          .fromBase(c -> (c * 9. / 5) + 32)
-//          .make();
+  public static final Temperature Kelvin = BaseUnits.Temperature;
+  public static final Temperature Celsius =
+      derive(Kelvin)
+          .offset(+273.15)
+          .make();
+
+  public static final Temperature Fahrenheit =
+      derive(Celsius)
+          .mappingInputRange(0, 100).toOutputRange(32, 212)
+          .make();
 
   /**
    * Creates a unit equal to a thousandth of the base unit, eg Milliseconds = Milli(Units.Seconds).
@@ -89,12 +95,47 @@ public final class Units {
 
   public static final class UnitBuilder<U extends Unit<U>> {
 
-    private U base;
+    private final U base;
     private DoubleUnaryOperator fromBase;
     private DoubleUnaryOperator toBase;
 
     private UnitBuilder(U base) {
       this.base = Objects.requireNonNull(base, "Base unit cannot be null");
+    }
+
+    /**
+     * Sets the unit conversions based on a simple offset. The new unit will have its values equal to
+     * (base value - offset).
+     *
+     * @param offset the offset
+     */
+    public UnitBuilder<U> offset(double offset) {
+      toBase = derivedValue -> derivedValue + offset;
+      fromBase = baseValue -> baseValue - offset;
+      return this;
+    }
+
+    class MappingBuilder {
+      private final double minInput, maxInput;
+
+      MappingBuilder(double minInput, double maxInput) {
+        this.minInput = minInput;
+        this.maxInput = maxInput;
+      }
+
+      static double mapValue(double value, double inMin, double inMax, double outMin, double outMax) {
+        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+      }
+
+      UnitBuilder<U> toOutputRange(double minOutput, double maxOutput) {
+        UnitBuilder.this.fromBase = x -> mapValue(x, minInput, maxInput, minOutput, maxOutput);
+        UnitBuilder.this.toBase = y -> mapValue(y, minOutput, maxOutput, minInput, maxInput);
+        return UnitBuilder.this;
+      }
+    }
+
+    public MappingBuilder mappingInputRange(double minBase, double maxBase) {
+      return new MappingBuilder(minBase, maxBase);
     }
 
     public UnitBuilder<U> fromBase(DoubleUnaryOperator fromBase) {
@@ -107,10 +148,24 @@ public final class Units {
       return this;
     }
 
-    public Unit<U> make() {
+    public U make() {
       Objects.requireNonNull(fromBase, "fromBase function was not set");
       Objects.requireNonNull(toBase, "toBase function was not set");
-      return new Unit<>(base.baseType, base.getConverterFromBase().andThen(fromBase), base.getConverterToBase().andThen(toBase));
+      try {
+        Constructor<U> ctor = base.baseType.getDeclaredConstructor(DoubleUnaryOperator.class, DoubleUnaryOperator.class);
+        return (U) ctor.newInstance(
+            toBase.andThen(base.getConverterToBase()), // (derived) -> derived to derivation base, then to true base
+            base.getConverterFromBase().andThen(fromBase) // (base) -> true base to derivation base, then to derived
+        );
+      } catch (InstantiationException e) {
+        throw new RuntimeException(e);
+      } catch (IllegalAccessException e) {
+        throw new RuntimeException(e);
+      } catch (InvocationTargetException e) {
+        throw new RuntimeException(e);
+      } catch (NoSuchMethodException e) {
+        throw new RuntimeException(e);
+      }
     }
 
   }

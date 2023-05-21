@@ -2,38 +2,10 @@ package edu.wpi.first.wpilib.units;
 
 import org.junit.Test;
 
-import static edu.wpi.first.wpilib.units.Units.Amps;
-import static edu.wpi.first.wpilib.units.Units.Centimeters;
-import static edu.wpi.first.wpilib.units.Units.Degrees;
-import static edu.wpi.first.wpilib.units.Units.Feet;
-import static edu.wpi.first.wpilib.units.Units.FeetPerSecond;
-import static edu.wpi.first.wpilib.units.Units.Grams;
-import static edu.wpi.first.wpilib.units.Units.Horsepower;
-import static edu.wpi.first.wpilib.units.Units.Inches;
-import static edu.wpi.first.wpilib.units.Units.InchesPerSecond;
-import static edu.wpi.first.wpilib.units.Units.Kilo;
-import static edu.wpi.first.wpilib.units.Units.Kilograms;
-import static edu.wpi.first.wpilib.units.Units.Meters;
-import static edu.wpi.first.wpilib.units.Units.MetersPerSecond;
-import static edu.wpi.first.wpilib.units.Units.Milli;
-import static edu.wpi.first.wpilib.units.Units.Milliamps;
-import static edu.wpi.first.wpilib.units.Units.Millimeters;
-import static edu.wpi.first.wpilib.units.Units.Milliseconds;
-import static edu.wpi.first.wpilib.units.Units.Millivolts;
-import static edu.wpi.first.wpilib.units.Units.Milliwatts;
-import static edu.wpi.first.wpilib.units.Units.Minutes;
-import static edu.wpi.first.wpilib.units.Units.Ounces;
-import static edu.wpi.first.wpilib.units.Units.Percent;
-import static edu.wpi.first.wpilib.units.Units.Pounds;
-import static edu.wpi.first.wpilib.units.Units.Radians;
-import static edu.wpi.first.wpilib.units.Units.Revolutions;
-import static edu.wpi.first.wpilib.units.Units.Seconds;
-import static edu.wpi.first.wpilib.units.Units.Value;
-import static edu.wpi.first.wpilib.units.Units.Volts;
-import static edu.wpi.first.wpilib.units.Units.Watts;
+import static edu.wpi.first.wpilib.units.Units.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings("unchecked")
 public class UnitsTest {
 
   // Be accurate to 0.01%
@@ -159,6 +131,28 @@ public class UnitsTest {
   @Test
   public void testHorsepower() {
     assertEquals(745.7, Watts.convert(1, Horsepower), thresh);
+  }
+
+  // Temperature
+
+  @Test
+  public void testCelsius() {
+    assertEquals(0, Celsius.of(-273.15).as(Kelvin), thresh);
+    assertEquals(273.15, Celsius.of(0).as(Kelvin), thresh);
+    assertEquals(0, Kelvin.of(273.15).as(Celsius), thresh);
+    assertTrue(Celsius.of(0).isEquivalent(Kelvin.of(273.15)));
+    assertTrue(Celsius.of(-273.15).isEquivalent(Kelvin.of(0)));
+  }
+
+  @Test
+  public void testFahrenheit() {
+    assertEquals(0, Fahrenheit.of(32).as(Celsius), thresh);
+    assertEquals(100, Fahrenheit.of(212).as(Celsius), thresh);
+    assertEquals(-459.67, Kelvin.of(0).as(Fahrenheit), thresh);
+    assertEquals(273.15, Fahrenheit.of(32).as(Kelvin), thresh);
+    assertEquals(32, Kelvin.of(273.15).as(Fahrenheit), thresh);
+    assertTrue(Fahrenheit.of(32).isEquivalent(Celsius.of(0)));
+    assertTrue(Fahrenheit.of(212).isEquivalent(Celsius.of(100)));
   }
 
   // Helpers
