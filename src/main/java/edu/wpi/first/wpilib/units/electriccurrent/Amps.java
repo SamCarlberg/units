@@ -1,10 +1,10 @@
 package edu.wpi.first.wpilib.units.electriccurrent;
 
 import edu.wpi.first.wpilib.units.ElectricCurrent;
-import edu.wpi.first.wpilib.units.Measure;
+import edu.wpi.first.wpilib.units.ImmutableMeasure;
 import edu.wpi.first.wpilib.units.Units;
 
-public class Amps extends Measure<ElectricCurrent> {
+public class Amps extends ImmutableMeasure<ElectricCurrent> {
 
   private Amps(double magnitude) {
     super(magnitude, Units.Amps);

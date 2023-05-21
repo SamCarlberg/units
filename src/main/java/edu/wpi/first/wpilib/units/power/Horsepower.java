@@ -1,10 +1,10 @@
 package edu.wpi.first.wpilib.units.power;
 
-import edu.wpi.first.wpilib.units.Measure;
+import edu.wpi.first.wpilib.units.ImmutableMeasure;
 import edu.wpi.first.wpilib.units.Power;
 import edu.wpi.first.wpilib.units.Units;
 
-public class Horsepower extends Measure<Power> {
+public class Horsepower extends ImmutableMeasure<Power> {
 
   private Horsepower(double magnitude) {
     super(magnitude, Units.Horsepower);

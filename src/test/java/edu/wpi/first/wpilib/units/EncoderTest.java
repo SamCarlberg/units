@@ -7,15 +7,23 @@ import static junit.framework.Assert.*;
 
 public class EncoderTest {
   static class Encoder<U extends Unit<U>> {
-    double ticks = 0;
+    int ticks = 0;
     private Measure<U> distancePerPulse;
+    private MutableMeasure<U> distance;
 
     public void setDistancePerPulse(Measure<U> distancePerPulse) {
       this.distancePerPulse = distancePerPulse;
+      this.distance = new MutableMeasure<>(0, distancePerPulse.unit());
     }
 
     public Measure<U> getDistance() {
-      return distancePerPulse.times(ticks);
+      return distance;
+    }
+
+    public void setTicks(int ticks) {
+      // pretend we read from JNI here instead of being passed a specific value
+      this.ticks = ticks;
+      distance.setMagnitude(distancePerPulse.magnitude() * ticks);
     }
   }
 
@@ -35,7 +43,7 @@ public class EncoderTest {
     encoder.ticks = 0;
     assertEquals(0, encoder.getDistance().as(Inches), Measure.EQUIVALENCE_THRESHOLD);
 
-    encoder.ticks = 2048; // one full encoder turn, 1/10th of a wheel rotation
+    encoder.setTicks(2048); // one full encoder turn, 1/10th of a wheel rotation
     assertEquals(6 * Math.PI / 10, encoder.getDistance().as(Inches), Measure.EQUIVALENCE_THRESHOLD);
   }
 
@@ -51,7 +59,7 @@ public class EncoderTest {
     encoder.ticks = 0;
     assertEquals(0, encoder.getDistance().as(Revolutions), Measure.EQUIVALENCE_THRESHOLD);
 
-    encoder.ticks = 2048; // one full encoder turn, 1/10th of a wheel rotation
+    encoder.setTicks(2048); // one full encoder turn, 1/10th of a wheel rotation
     assertEquals(1, encoder.getDistance().as(Revolutions), Measure.EQUIVALENCE_THRESHOLD);
   }
 }

@@ -1,10 +1,10 @@
 package edu.wpi.first.wpilib.units.angle;
 
 import edu.wpi.first.wpilib.units.Angle;
-import edu.wpi.first.wpilib.units.Measure;
+import edu.wpi.first.wpilib.units.ImmutableMeasure;
 import edu.wpi.first.wpilib.units.Units;
 
-public class Radians extends Measure<Angle> {
+public class Radians extends ImmutableMeasure<Angle> {
 
   private Radians(double magnitude) {
     super(magnitude, Units.Radians);

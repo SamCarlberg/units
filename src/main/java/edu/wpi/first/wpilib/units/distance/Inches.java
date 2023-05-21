@@ -1,10 +1,10 @@
 package edu.wpi.first.wpilib.units.distance;
 
 import edu.wpi.first.wpilib.units.Distance;
-import edu.wpi.first.wpilib.units.Measure;
+import edu.wpi.first.wpilib.units.ImmutableMeasure;
 import edu.wpi.first.wpilib.units.Units;
 
-public class Inches extends Measure<Distance> {
+public class Inches extends ImmutableMeasure<Distance> {
 
   private Inches(double magnitude) {
     super(magnitude, Units.Inches);

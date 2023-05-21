@@ -1,63 +1,40 @@
 package edu.wpi.first.wpilib.units;
 
-import java.util.Objects;
-
 /**
- * A measure holds the magnitude and unit of some dimension, such as distance, time, or speed. A measure is <i>immutable</i>
- * and <i>type safe</i>, making it easy to use in concurrent situations and gives compile-time safety. Two measures
+ * A measure holds the magnitude and unit of some dimension, such as distance, time, or speed. Two measures
  * with the same <i>unit</i> and <i>magnitude</i> are effectively the same object.
  *
  * @param <U> the unit type of the measure
  */
-public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
-
+public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
   /**
    * The threshold for two measures to be considered equivalent if converted to the same unit.
    * This is only needed due to floating-point error.
    */
-  public static final double EQUIVALENCE_THRESHOLD = 1e-12;
-
-  private final double magnitude;
-  private final U unit;
+  double EQUIVALENCE_THRESHOLD = 1e-12;
 
   /**
-   * @param magnitude the magnitude of this measure
-   * @param unit      the unit of this measure.
+   * Creates a new measure object with the given magnitude and unit.
    */
-  @SuppressWarnings("unchecked")
-  public Measure(double magnitude, Unit<U> unit) {
-    Objects.requireNonNull(unit, "Unit cannot be null");
-    this.magnitude = magnitude;
-    this.unit = (U) unit;
+  static <U extends Unit<U>> Measure<U> of(double magnitude, Unit<U> unit) {
+    return new ImmutableMeasure<>(magnitude, unit);
   }
 
   /**
    * Gets the unitless magnitude of this measure.
    */
-  public double magnitude() {
-    return magnitude;
-  }
+  double magnitude();
 
   /**
    * Gets the units of this measure.
    */
-  public U unit() {
-    return unit;
-  }
+  U unit();
 
-  /**
-   * Converts this measure to a measure with a different unit of the same type, eg minutes to seconds.
-   *
-   * @param unit the unit to convert this measure to
-   *
-   * @return the value of this measure in the given unit
-   */
-  public double as(Unit<U> unit) {
-    if (unit == this.unit) {
-      // Same unit (eg inches, seconds, etc). No conversion necessary.
-      return magnitude;
+  default double as(Unit<U> unit) {
+    if (this.unit() == unit) {
+      return magnitude();
     } else {
-      return unit.convert(this.magnitude, this.unit);
+      return unit.convert(magnitude(), this.unit());
     }
   }
 
@@ -66,11 +43,9 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
    *
    * @param multiplier the constant to multiply by
    */
-  public Measure<U> times(double multiplier) {
-    return new Measure<>(magnitude * multiplier, unit);
-  }
+  Measure<U> times(double multiplier);
 
-  public Measure<U> times(Measure<? extends Unitless> scalar) {
+  default Measure<U> times(Measure<? extends Unitless> scalar) {
     return times(scalar.baseUnitMagnitude());
   }
 
@@ -82,79 +57,41 @@ public class Measure<U extends Unit<U>> implements Comparable<Measure<U>> {
    *
    * @see #times(double)
    */
-  public Measure<U> divide(double divisor) {
+  default Measure<U> divide(double divisor) {
     return times(1 / divisor);
   }
 
-  public Measure<U> divide(Measure<? extends Unitless> scalar) {
+  default Measure<U> divide(Measure<? extends Unitless> scalar) {
     return divide(scalar.baseUnitMagnitude());
   }
 
   /**
    * Adds another measure to this one. The resulting measure has the same unit as this one.
    */
-  public Measure<U> add(Measure<U> other) {
-    return new Measure<>(magnitude + other.as(this.unit), unit);
-  }
+  Measure<U> add(Measure<U> other);
 
-  /**
-   * Subtracts another measure from this one. The resulting measure has the same unit as this one.
-   */
-  public Measure<U> subtract(Measure<U> other) {
+  default Measure<U> subtract(Measure<U> other) {
     return add(other.negate());
   }
 
   /**
    * Negates this measure and returns the result.
    */
-  public Measure<U> negate() {
-    return new Measure<>(-magnitude, unit);
-  }
+  Measure<U> negate();
 
   /**
    * Gets the magnitude of this measure in terms of the base unit.
    */
-  private double baseUnitMagnitude() {
-    return unit.getConverterToBase().applyAsDouble(magnitude);
+  default double baseUnitMagnitude() {
+    return unit().getConverterToBase().applyAsDouble(magnitude());
   }
 
-  /**
-   * Checks if this measure is equivalent to another. Two measures are equivalent if the base unit
-   * type is the same (eg distance, time, ...) and have equal magnitude if converted to the same unit.
-   *
-   * @param other the measure to compare to.
-   *
-   * @return true if this measurement is equivalent to the given one, false if not
-   */
-  public boolean isEquivalent(Measure<U> other) {
+  default boolean isEquivalent(Measure<U> other) {
     return Math.abs(baseUnitMagnitude() - other.baseUnitMagnitude()) <= EQUIVALENCE_THRESHOLD;
   }
 
-  /**
-   * Checks for <i>object equality</i>. To check if two measures are <i>equivalent</i>,
-   * use {@link #isEquivalent(Measure) isEquivalent}.
-   */
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (obj.getClass() != this.getClass()) {
-      return false;
-    }
-    Measure<?> m = (Measure<?>) obj;
-    return m.unit() == this.unit
-        && m.magnitude() == this.magnitude;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(magnitude, unit);
-  }
-
-  @Override
-  public int compareTo(Measure<U> o) {
+  default int compareTo(Measure<U> o) {
     return Double.compare(this.baseUnitMagnitude(), o.baseUnitMagnitude());
   }
-
 }

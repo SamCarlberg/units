@@ -1,10 +1,10 @@
 package edu.wpi.first.wpilib.units.mass;
 
+import edu.wpi.first.wpilib.units.ImmutableMeasure;
 import edu.wpi.first.wpilib.units.Mass;
-import edu.wpi.first.wpilib.units.Measure;
 import edu.wpi.first.wpilib.units.Units;
 
-public class Grams extends Measure<Mass> {
+public class Grams extends ImmutableMeasure<Mass> {
 
   private Grams(double magnitude) {
     super(magnitude, Units.Grams);

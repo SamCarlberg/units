@@ -65,7 +65,7 @@ public class Unit<U extends Unit<U>> {
    * @param magnitude the magnitude of the measure to create
    */
   public Measure<U> of(double magnitude) {
-    return new Measure<>(magnitude, this);
+    return Measure.of(magnitude, this);
   }
 
   /**

@@ -1,13 +1,13 @@
 package edu.wpi.first.wpilib.units.temperature;
 
-import edu.wpi.first.wpilib.units.Measure;
+import edu.wpi.first.wpilib.units.ImmutableMeasure;
 import edu.wpi.first.wpilib.units.Temperature;
 import edu.wpi.first.wpilib.units.Units;
 
 /**
  *
  */
-public class Fahrenheit extends Measure<Temperature> {
+public class Fahrenheit extends ImmutableMeasure<Temperature> {
 
   private Fahrenheit(double magnitude) {
     super(magnitude, Units.Celsius);

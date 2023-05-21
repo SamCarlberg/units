@@ -1,12 +1,8 @@
 package edu.wpi.first.wpilib.units.power;
 
-import edu.wpi.first.wpilib.units.ElectricCurrent;
-import edu.wpi.first.wpilib.units.ElectricPotential;
-import edu.wpi.first.wpilib.units.Measure;
-import edu.wpi.first.wpilib.units.Power;
-import edu.wpi.first.wpilib.units.Units;
+import edu.wpi.first.wpilib.units.*;
 
-public class Watts extends Measure<Power> {
+public class Watts extends ImmutableMeasure<Power> {
 
   private Watts(double magnitude) {
     super(magnitude, Units.Watts);
