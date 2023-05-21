@@ -18,7 +18,7 @@ public class Distance extends Unit<Distance> {
     super(Distance.class, toBaseConverter, fromBaseConverter);
   }
 
-  public <T extends Unit<Time>> Velocity per(T period) {
+  public Velocity per(Unit<Time> period) {
     return new Velocity(
         (double newUnitValue) -> getConverterToBase().applyAsDouble(newUnitValue) / period.getConverterToBase().applyAsDouble(newUnitValue),
         (double baseUnitValue) -> getConverterFromBase().applyAsDouble(baseUnitValue) / period.getConverterFromBase().applyAsDouble(baseUnitValue)
