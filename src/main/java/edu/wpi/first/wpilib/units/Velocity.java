@@ -2,8 +2,12 @@ package edu.wpi.first.wpilib.units;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
+
+  private final D unit;
+  private final Time period;
 
   /**
    * Stores velocity units that were created ad-hoc using {@link #combine(Unit, Time, String, String)}. Does not store
@@ -16,7 +20,7 @@ public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
    * Generates a cache key used for cache lookups. Still triggers an allocation of a Long (thanks, java)
    */
   private static long cacheKey(Unit<?> numerator, Unit<?> denominator) {
-    return ((long) numerator.hashCode()) << 32L | denominator.hashCode();
+    return ((long) numerator.hashCode()) << 32L | ((long) denominator.hashCode()) & 0xFFFFFFFFL;
   }
 
   /**
@@ -51,7 +55,7 @@ public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
       return cache.get(key);
     }
 
-    Velocity<D> velocity = new Velocity<>(numerator.toBaseUnits(1) / period.toBaseUnits(1), name, symbol);
+    Velocity<D> velocity = new Velocity<>((D) numerator, period, name, symbol);
     cache.put(key, velocity);
     return velocity;
   }
@@ -66,25 +70,42 @@ public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
     var name = numerator.name() + " per " + period.name();
     var symbol = numerator.symbol() + "/" + period.symbol();
 
-    Velocity<D> velocity = new Velocity<>(numerator.toBaseUnits(1) / period.toBaseUnits(1), name, symbol);
+    Velocity<D> velocity = new Velocity<>((D) numerator, period, name, symbol);
     cache.put(key, velocity);
     return velocity;
   }
 
-  Velocity(double baseUnitEquivalent, String name, String symbol) {
-    super((Class) Velocity.class, baseUnitEquivalent, name, symbol);
+  Velocity(D unit, Time period, String name, String symbol) {
+    super((Class) Velocity.class, unit.toBaseUnits(1) / period.toBaseUnits(1), name, symbol);
+    this.unit = unit;
+    this.period = period;
   }
 
   Velocity(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
     super((Class) Velocity.class, toBaseConverter, fromBaseConverter, name, symbol);
+    this.unit = Units.anonymous();
+    this.period = Units.Seconds;
   }
 
-  protected Velocity(Class<? extends Velocity<D>> baseType, double baseUnitEquivalent, String name, String symbol) {
-    super(baseType, baseUnitEquivalent, name, symbol);
+  public D getUnit() {
+    return unit;
   }
 
-  protected Velocity(Class<? extends Velocity<D>> baseType, UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
-    super(baseType, toBaseConverter, fromBaseConverter, name, symbol);
+  public Time getPeriod() {
+    return period;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    Velocity<?> velocity = (Velocity<?>) o;
+    return unit.equals(velocity.unit) && period.equals(velocity.period);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), unit, period);
+  }
 }

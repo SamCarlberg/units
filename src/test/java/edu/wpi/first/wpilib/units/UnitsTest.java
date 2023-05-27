@@ -253,7 +253,6 @@ public class UnitsTest {
     assertEquals(0, Celsius.of(-273.15).in(Kelvin), thresh);
     assertEquals(273.15, Celsius.of(0).in(Kelvin), thresh);
     assertEquals(0, Kelvin.of(273.15).in(Celsius), thresh);
-    System.out.println(Celsius.of(0).in(Kelvin));
     assertTrue(Celsius.of(0).isEquivalent(Kelvin.of(273.15)));
     assertTrue(Celsius.of(-273.15).isEquivalent(Kelvin.of(0)));
     assertEquals("Celsius", Celsius.name());

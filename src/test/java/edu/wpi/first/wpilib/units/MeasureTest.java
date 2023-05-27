@@ -84,6 +84,30 @@ public class MeasureTest {
   }
 
   @Test
+  public void testTimesMeasure() {
+    var m1 = Units.Volts.of(1.567);
+    var m2 = Units.Kilograms.of(8.4e-5);
+
+    assertEquals(Units.Volts.mult(Units.Kilograms).of(1.567 * 8.4e-5), m1.times(m2));
+  }
+
+  @Test
+  public void testPerTimesMeasure() {
+    var m1 = Units.Feet.per(Units.Milliseconds).of(19);
+    var m2 = Units.Seconds.of(44);
+
+    // 19 ft/ms = 19,000 ft/s
+    // 19,000 ft/s * 44s = 836,000 ft
+    assertEquals(Units.Feet.of(836_000), m1.times(m2));
+
+    // 42 ex per foot * 17mm = 42 ex * 17mm / (304.8mm/ft) = 42 * 17 / 304.8 = 2.34252
+    var exampleUnit = new ExampleUnit(1);
+    var m3 = exampleUnit.per(Units.Feet).of(42);
+    var m4 = Units.Millimeters.of(17);
+    assertEquals(exampleUnit.of(42 * 17 / (12 * 25.4)), m3.times(m4));
+  }
+
+  @Test
   public void testToShortString() {
     var measure = Measure.of(343, Units.Volts);
     assertEquals("3.430e+02 V", measure.toShortString());

@@ -102,6 +102,11 @@ public class Unit<U extends Unit<U>> {
     return Measure.of(magnitude, this);
   }
 
+  public Measure<U> ofBaseUnits(double baseUnitMagnitude) {
+    double magnitude = this.fromBaseUnits(baseUnitMagnitude);
+    return of(magnitude);
+  }
+
   public Measure<U> zero() {
     // lazy init because 'this' is null in object initialization
     if (zero == null) zero = new ImmutableMeasure<>(0, this);
@@ -143,7 +148,7 @@ public class Unit<U extends Unit<U>> {
    * @param <D> the type of the denominator units
    */
   public <D extends Unit<D>> Per<U, D> per(D denominator) {
-    return Per.combine(this, denominator);
+    return Per.combine((U) this, denominator);
   }
 
   /**
@@ -166,6 +171,19 @@ public class Unit<U extends Unit<U>> {
 
     return Math.abs(this.fromBaseConverter.apply(arbitrary) - other.fromBaseConverter.apply(arbitrary)) <= Measure.EQUIVALENCE_THRESHOLD &&
         Math.abs(this.toBaseConverter.apply(arbitrary) - other.toBaseConverter.apply(arbitrary)) <= Measure.EQUIVALENCE_THRESHOLD;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Unit)) return false;
+    Unit<?> that = (Unit<?>) o;
+    return baseType.equals(that.baseType) && name.equals(that.name) && symbol.equals(that.symbol) && this.equivalent(that);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(toBaseConverter, fromBaseConverter, baseType, name, symbol);
   }
 
   public String name() {

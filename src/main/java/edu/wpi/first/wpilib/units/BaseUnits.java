@@ -23,7 +23,7 @@ public final class BaseUnits {
   /**
    * The standard unit of velocity, meters per second.
    */
-  public static final Velocity<Distance> Velocity = new Velocity<>(1, "Meters per Second", "m/s");
+  public static final Velocity<Distance> Velocity = new Velocity<>(Distance, Time, "Meter per Second", "m/s");
 
   /**
    * The standard unit of mass, grams.

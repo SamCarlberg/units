@@ -14,8 +14,8 @@ import java.util.Map;
  * @param <D> the type of the denominator unit
  */
 public class Per<N extends Unit<N>, D extends Unit<D>> extends Unit<Per<N, D>> {
-  private final Unit<? extends N> numerator;
-  private final Unit<? extends D> denominator;
+  private final N numerator;
+  private final D denominator;
 
   /**
    * Keep a cache of created instances so expressions like Volts.per(Meter) don't do any allocations
@@ -23,7 +23,7 @@ public class Per<N extends Unit<N>, D extends Unit<D>> extends Unit<Per<N, D>> {
    */
   private static final Map<Long, Per> cache = new HashMap<>();
 
-  protected Per(Class<? extends Per<N, D>> baseType, Unit<? extends N> numerator, Unit<? extends D> denominator) {
+  protected Per(Class<Per<N, D>> baseType, N numerator, D denominator) {
     super(baseType, numerator.toBaseUnits(1) / denominator.toBaseUnits(1), numerator.name() + " per " + denominator.name(), numerator.symbol() + "/" + denominator.symbol());
     this.numerator = numerator;
     this.denominator = denominator;
@@ -46,8 +46,8 @@ public class Per<N extends Unit<N>, D extends Unit<D>> extends Unit<Per<N, D>> {
    * @param <N> the type of the numerator unit
    */
   @SuppressWarnings("unchecked")
-  public static <N extends Unit<N>, D extends Unit<D>> Per<N, D> combine(Unit<N> numerator, Unit<D> denominator) {
-    final Long key = ((long) numerator.hashCode()) << 32L | denominator.hashCode();
+  public static <N extends Unit<N>, D extends Unit<D>> Per<N, D> combine(N numerator, D denominator) {
+    final Long key = ((long) numerator.hashCode()) << 32L | ((long) denominator.hashCode()) & 0xFFFFFFFFL;
     var existing = cache.get(key);
     if (existing != null) return existing;
 
@@ -60,11 +60,11 @@ public class Per<N extends Unit<N>, D extends Unit<D>> extends Unit<Per<N, D>> {
     return newUnit;
   }
 
-  public Unit<? extends N> numerator() {
+  public N numerator() {
     return numerator;
   }
 
-  public Unit<? extends D> denominator() {
+  public D denominator() {
     return denominator;
   }
 }

@@ -20,6 +20,14 @@ public class Mult<A extends Unit<A>, B extends Unit<B>> extends Unit<Mult<A, B>>
     return new Mult(Mult.class, a, b);
   }
 
+  public A unitA() {
+    return a;
+  }
+
+  public B unitB() {
+    return b;
+  }
+
   @Override
   public String toString() {
     return "(" + a.toString() + " * " + b.toString() + ")";

@@ -71,9 +71,8 @@ public class ImmutableMeasure<U extends Unit<U>> implements Measure<U> {
     if (obj.getClass() != this.getClass()) {
       return false;
     }
-    Measure<?> m = (Measure<?>) obj;
-    return m.unit() == this.unit
-        && m.magnitude() == this.magnitude;
+    Measure<?> that = (Measure<?>) obj;
+    return Objects.equals(unit, that.unit()) && this.isEquivalent(that);
   }
 
   @Override

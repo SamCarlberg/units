@@ -91,6 +91,7 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
     return Measure.of(magnitude() * multiplier, unit());
   }
 
+  @SuppressWarnings("unchecked")
   default <U2 extends Unit<U2>, R extends Unit<R>> Measure<R> times(Measure<U2> other) {
     if (other.unit() instanceof Unitless) {
       // scalar multiplication
@@ -99,17 +100,22 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
 
     if (unit() instanceof Per && other.unit().baseType.equals(((Per<?, ?>) unit()).denominator().baseType)) {
       // denominator of the Per cancels out, return with just the units of the numerator
-      return (Measure<R>) ((Per<?, ?>) unit()).denominator().of(in((U) other.unit()) * other.magnitude());
+      Unit<?> numerator = ((Per<?, ?>) unit()).numerator();
+      return (Measure<R>) numerator.ofBaseUnits(baseUnitMagnitude() * other.baseUnitMagnitude());
+    } else if (unit() instanceof Velocity && other.unit().baseType.equals(Time.class)) {
+      // Multiplying a velocity by a time, return the scalar unit (eg Distance)
+      Unit<?> numerator = ((Velocity<?>) unit()).getUnit();
+      return (Measure<R>) numerator.ofBaseUnits(baseUnitMagnitude() * other.baseUnitMagnitude());
     } else if (unit() instanceof Per &&
         other.unit() instanceof Per &&
-        ((Per) unit()).denominator().baseType.equals(((Per) other.unit()).numerator().baseType) &&
-        ((Per) unit()).numerator().baseType.equals(((Per) other.unit()).denominator().baseType)) {
+        ((Per<U, ?>) unit()).denominator().baseType.equals(((Per<?, U>) other.unit()).numerator().baseType) &&
+        ((Per<?, U>) unit()).numerator().baseType.equals(((Per<U, ?>) other.unit()).denominator().baseType)) {
       // multiplying eg meters per second * milliseconds per foot
       // return a scalar
       return (Measure<R>) Units.Value.of(baseUnitMagnitude() * other.baseUnitMagnitude());
     }
 
-    return (Measure<R>) unit().mult(other.unit()).of(magnitude() * other.magnitude());
+    return (Measure<R>) unit().mult(other.unit()).ofBaseUnits(baseUnitMagnitude() * other.baseUnitMagnitude());
   }
 
   /**

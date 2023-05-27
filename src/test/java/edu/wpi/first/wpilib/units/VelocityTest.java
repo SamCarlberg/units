@@ -31,4 +31,12 @@ public class VelocityTest {
     var secondInvocation = someDistance.per(someTime);
     assertSame(firstInvocation + " was not the same object as " + secondInvocation, firstInvocation, secondInvocation);
   }
+
+  @Test
+  public void testMult() {
+    var baseUnit = new ExampleUnit(92);
+    var vel = baseUnit.per(Millisecond);
+    var mult = vel.mult(Second);
+    assertEquals(92_000, mult.toBaseUnits(1), 1e-5);
+  }
 }

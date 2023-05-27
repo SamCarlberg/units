@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.util.Objects;
+
 /**
  * A specialization of {@link Measure} that allows for mutability. This is intended to be used for memory use
  * reasons (such as on the memory-restricted RoboRIO 1 or 2 or SBC coprocessors) and should NOT be exposed
@@ -97,5 +99,18 @@ public class MutableMeasure<U extends Unit<U>> implements Measure<U> {
   @Override
   public String toString() {
     return toShortString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof MutableMeasure)) return false;
+    MutableMeasure<?> that = (MutableMeasure<?>) o;
+    return Objects.equals(unit, that.unit) && this.isEquivalent(that);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(magnitude, unit);
   }
 }
