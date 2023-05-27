@@ -44,7 +44,8 @@ public class UnitsTest {
   @Test
   public void testInches() {
     assertEquals(1, Meters.convert(39.3701, Inches), thresh);
-    assertEquals(39.3701, Inches.convert(1, Meters), thresh);
+    assertEquals(39.3701, Inches.convert(1, Meters), 1e-4);
+    assertEquals(1 / 25.4, Inches.convert(1, Millimeters), 0); // should be exact
     assertEquals(12, Inches.convert(1, Feet), thresh);
   }
 
@@ -195,20 +196,21 @@ public class UnitsTest {
 
   @Test
   public void testCelsius() {
-    assertEquals(0, Celsius.of(-273.15).as(Kelvin), thresh);
-    assertEquals(273.15, Celsius.of(0).as(Kelvin), thresh);
-    assertEquals(0, Kelvin.of(273.15).as(Celsius), thresh);
+    assertEquals(0, Celsius.of(-273.15).in(Kelvin), thresh);
+    assertEquals(273.15, Celsius.of(0).in(Kelvin), thresh);
+    assertEquals(0, Kelvin.of(273.15).in(Celsius), thresh);
+    System.out.println(Celsius.of(0).in(Kelvin));
     assertTrue(Celsius.of(0).isEquivalent(Kelvin.of(273.15)));
     assertTrue(Celsius.of(-273.15).isEquivalent(Kelvin.of(0)));
   }
 
   @Test
   public void testFahrenheit() {
-    assertEquals(0, Fahrenheit.of(32).as(Celsius), thresh);
-    assertEquals(100, Fahrenheit.of(212).as(Celsius), thresh);
-    assertEquals(-459.67, Kelvin.of(0).as(Fahrenheit), thresh);
-    assertEquals(273.15, Fahrenheit.of(32).as(Kelvin), thresh);
-    assertEquals(32, Kelvin.of(273.15).as(Fahrenheit), thresh);
+    assertEquals(0, Fahrenheit.of(32).in(Celsius), thresh);
+    assertEquals(100, Fahrenheit.of(212).in(Celsius), thresh);
+    assertEquals(-459.67, Kelvin.of(0).in(Fahrenheit), thresh);
+    assertEquals(273.15, Fahrenheit.of(32).in(Kelvin), thresh);
+    assertEquals(32, Kelvin.of(273.15).in(Fahrenheit), thresh);
     assertTrue(Fahrenheit.of(32).isEquivalent(Celsius.of(0)));
     assertTrue(Fahrenheit.of(212).isEquivalent(Celsius.of(100)));
   }

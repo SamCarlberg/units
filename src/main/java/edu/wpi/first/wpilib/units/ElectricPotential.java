@@ -11,10 +11,7 @@ public class ElectricPotential extends Unit<ElectricPotential> {
   }
 
   public Power times(Unit<ElectricCurrent> current) {
-    return new Power(
-        getConverterToBase().mult(current.getConverterToBase()),
-        getConverterFromBase().mult(current.getConverterFromBase())
-    );
+    return new Power(toBaseUnits(1) * current.toBaseUnits(1));
   }
 
 }

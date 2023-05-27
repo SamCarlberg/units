@@ -51,14 +51,14 @@ public class EncoderTest {
     encoder.setDistancePerPulse(distancePerPulse);
 
     encoder.ticks = 0;
-    assertEquals(0, encoder.getDistance().as(Inches), Measure.EQUIVALENCE_THRESHOLD);
-    assertEquals(0, encoder.getRate().as(Inches.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(0, encoder.getDistance().in(Inches), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(0, encoder.getRate().in(Inches.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
 
     encoder.setTicks(2048); // one full encoder turn, 1/10th of a wheel rotation
-    assertEquals(6 * Math.PI / 10, encoder.getDistance().as(Inches), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(6 * Math.PI / 10, encoder.getDistance().in(Inches), Measure.EQUIVALENCE_THRESHOLD);
 
     encoder.setTicks(0); // one full encoder turn back, 1/10th of a wheel rotation - rate should be negative
-    assertEquals(-6 * Math.PI / 10, encoder.getRate().as(Inches.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(-6 * Math.PI / 10, encoder.getRate().in(Inches.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
   }
 
   @Test
@@ -71,11 +71,11 @@ public class EncoderTest {
     encoder.setDistancePerPulse(distancePerPulse);
 
     encoder.ticks = 0;
-    assertEquals(0, encoder.getDistance().as(Revolutions), Measure.EQUIVALENCE_THRESHOLD);
-    assertEquals(0, encoder.getRate().as(Revolutions.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(0, encoder.getDistance().in(Revolutions), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(0, encoder.getRate().in(Revolutions.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
 
     encoder.setTicks(2048); // one full encoder turn, 1/10th of a wheel rotation
-    assertEquals(1, encoder.getDistance().as(Revolutions), Measure.EQUIVALENCE_THRESHOLD);
-    assertEquals(1, encoder.getRate().as(Revolutions.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(1, encoder.getDistance().in(Revolutions), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(1, encoder.getRate().in(Revolutions.per(Second)), Measure.EQUIVALENCE_THRESHOLD);
   }
 }

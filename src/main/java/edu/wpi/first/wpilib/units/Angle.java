@@ -1,5 +1,8 @@
 package edu.wpi.first.wpilib.units;
 
+// technically, angles are unitless dimensions
+// eg Mass * Distance * Velocity<Angle> is equivalent to (Mass * Distance) / Time - otherwise known as Power
+// in other words, Velocity<Angle> is /actually/ Frequency
 public class Angle extends Unit<Angle> {
 
   /**

@@ -7,7 +7,9 @@ import static org.junit.Assert.*;
 public class ElectricCurrentTest {
   @Test
   public void testAmpsTimesVolts() {
-    assertTrue(Units.Amps.times(Units.Volts).equivalent(Units.Watts));
+    Power combined = Units.Amps.times(Units.Volts);
+
+    assertTrue(combined.equivalent(Units.Watts));
   }
 
   @Test

@@ -42,23 +42,6 @@ public class ImmutableMeasure<U extends Unit<U>> implements Measure<U> {
   }
 
   /**
-   * Converts this measure to a measure with a different unit of the same type, eg minutes to seconds.
-   *
-   * @param unit the unit to convert this measure to
-   *
-   * @return the value of this measure in the given unit
-   */
-  @Override
-  public double as(Unit<U> unit) {
-    if (unit == this.unit) {
-      // Same unit (eg inches, seconds, etc). No conversion necessary.
-      return magnitude;
-    } else {
-      return unit.convert(this.magnitude, this.unit);
-    }
-  }
-
-  /**
    * Multiplies this measurement by some constant multiplier and returns the result.
    *
    * @param multiplier the constant to multiply by
@@ -68,64 +51,12 @@ public class ImmutableMeasure<U extends Unit<U>> implements Measure<U> {
     return Measure.of(magnitude * multiplier, unit);
   }
 
-  @Override
-  public Measure<U> times(Measure<? extends Unitless> scalar) {
-    return times(scalar.baseUnitMagnitude());
-  }
-
-  /**
-   * Divides this measurement by some constant divisor and returns the result. This is equivalent to
-   * {@code times(1 / divisor)}
-   *
-   * @param divisor the constant to divide by
-   *
-   * @see #times(double)
-   */
-  @Override
-  public Measure<U> divide(double divisor) {
-    return times(1 / divisor);
-  }
-
-  @Override
-  public Measure<U> divide(Measure<? extends Unitless> scalar) {
-    return divide(scalar.baseUnitMagnitude());
-  }
-
   /**
    * Adds another measure to this one. The resulting measure has the same unit as this one.
    */
   @Override
   public Measure<U> add(Measure<U> other) {
-    return Measure.of(magnitude + other.as(this.unit), unit);
-  }
-
-  /**
-   * Subtracts another measure from this one. The resulting measure has the same unit as this one.
-   */
-  @Override
-  public Measure<U> subtract(Measure<U> other) {
-    return add(other.negate());
-  }
-
-  /**
-   * Negates this measure and returns the result.
-   */
-  @Override
-  public Measure<U> negate() {
-    return Measure.of(-magnitude, unit);
-  }
-
-  /**
-   * Checks if this measure is equivalent to another. Two measures are equivalent if the base unit
-   * type is the same (eg distance, time, ...) and have equal magnitude if converted to the same unit.
-   *
-   * @param other the measure to compare to.
-   *
-   * @return true if this measurement is equivalent to the given one, false if not
-   */
-  @Override
-  public boolean isEquivalent(Measure<U> other) {
-    return Math.abs(baseUnitMagnitude() - other.baseUnitMagnitude()) <= EQUIVALENCE_THRESHOLD;
+    return Measure.of(magnitude + other.in(this.unit), unit);
   }
 
   /**
@@ -151,8 +82,7 @@ public class ImmutableMeasure<U extends Unit<U>> implements Measure<U> {
   }
 
   @Override
-  public int compareTo(Measure<U> o) {
-    return Double.compare(this.baseUnitMagnitude(), o.baseUnitMagnitude());
+  public Measure<U> copy() {
+    return this; // already immutable, no need to allocate a new object
   }
-
 }

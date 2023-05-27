@@ -14,6 +14,36 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
   double EQUIVALENCE_THRESHOLD = 1e-12;
 
   /**
+   * A zero-valued measure on its base units of measurement. For non-scalar unit types like temperature,
+   * this is equivalent to <i>absolute zero</i>.
+   */
+  Measure ZERO = Measure.of(0, Units.AnonymousBaseUnit);
+
+  /**
+   * A zero-valued measure on its base units of measurement. For non-scalar unit types like temperature,
+   * this is equivalent to <i>absolute zero</i>.
+   */
+  Measure ONE = Measure.of(1, Units.AnonymousBaseUnit);
+
+  /**
+   * A zero-valued measure on its base units of measurement. For non-scalar unit types like temperature,
+   * this is equivalent to <i>absolute zero</i>.
+   *
+   * <pre>
+   *   Feet.of(0).isEquivalent(Measure.zero())
+   *   Celsius.of(-273.15).isEquivalent(Measure.zero())
+   *   Millimeters.per(Second).of(0).isEquivalent(Measure.zero())
+   * </pre>
+   */
+  static <U extends Unit<U>> Measure<U> zero() {
+    return ZERO;
+  }
+
+  static <U extends Unit<U>> Measure<U> one() {
+    return ONE;
+  }
+
+  /**
    * Creates a new measure object with the given magnitude and unit.
    */
   static <U extends Unit<U>> Measure<U> of(double magnitude, Unit<U> unit) {
@@ -30,7 +60,19 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
    */
   U unit();
 
-  default double as(Unit<U> unit) {
+  /**
+   * Converts this measure to a measure with a different unit of the same type, eg minutes to seconds.
+   *
+   * <pre>
+   *   Meters.of(12).in(Feet) // => 39.3701
+   *   Seconds.of(15).in(Minutes) // => 0.25
+   * </pre>
+   *
+   * @param unit the unit to convert this measure to
+   *
+   * @return the value of this measure in the given unit
+   */
+  default double in(U unit) {
     if (this.unit() == unit) {
       return magnitude();
     } else {
@@ -43,10 +85,29 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
    *
    * @param multiplier the constant to multiply by
    */
-  Measure<U> times(double multiplier);
+  default Measure<U> times(double multiplier) {
+    return Measure.of(magnitude() * multiplier, unit());
+  }
 
-  default Measure<U> times(Measure<? extends Unitless> scalar) {
-    return times(scalar.baseUnitMagnitude());
+  default <U2 extends Unit<U2>, R extends Unit<R>> Measure<R> times(Measure<U2> other) {
+    if (other.unit() instanceof Unitless) {
+      // scalar multiplication
+      return (Measure<R>) times(other.baseUnitMagnitude());
+    }
+
+    if (unit() instanceof Per && other.unit().baseType.equals(((Per<?, ?>) unit()).denominator().baseType)) {
+      // denominator of the Per cancels out, return with just the units of the numerator
+      return (Measure<R>) ((Per<?, ?>) unit()).denominator().of(in((U) other.unit()) * other.magnitude());
+    } else if (unit() instanceof Per &&
+        other.unit() instanceof Per &&
+        ((Per) unit()).denominator().baseType.equals(((Per) other.unit()).numerator().baseType) &&
+        ((Per) unit()).numerator().baseType.equals(((Per) other.unit()).denominator().baseType)) {
+      // multiplying eg meters per second * milliseconds per foot
+      // return a scalar
+      return (Measure<R>) Units.Value.of(baseUnitMagnitude() * other.baseUnitMagnitude());
+    }
+
+    return (Measure<R>) unit().mult(other.unit()).of(magnitude() * other.magnitude());
   }
 
   /**
@@ -61,23 +122,43 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
     return times(1 / divisor);
   }
 
-  default Measure<U> divide(Measure<? extends Unitless> scalar) {
+  default Measure<U> divide(Measure<Unitless> scalar) {
     return divide(scalar.baseUnitMagnitude());
+  }
+
+  default Measure<Velocity<U>> per(Measure<Time> period) {
+    var newUnit = unit().per(period.unit());
+    return Measure.of(magnitude() / period.magnitude(), unit().per(period.unit()));
+  }
+
+  default <U2 extends Unit<U2>> Measure<Per<U, U2>> per(U2 denominator) {
+    var newUnit = unit().per(denominator);
+    return Measure.of(magnitude(), newUnit);
   }
 
   /**
    * Adds another measure to this one. The resulting measure has the same unit as this one.
    */
-  Measure<U> add(Measure<U> other);
+  default Measure<U> add(Measure<U> other) {
+    return Measure.of(magnitude() + other.in(unit()), unit());
+  }
 
   default Measure<U> subtract(Measure<U> other) {
+    // delegate implementation to `add`
     return add(other.negate());
   }
 
   /**
    * Negates this measure and returns the result.
    */
-  Measure<U> negate();
+  default Measure<U> negate() {
+    return times(-1);
+  }
+
+  /**
+   * Returns an immutable copy of this measure. The copy can be used freely and is guaranteed never to change.
+   */
+  Measure<U> copy();
 
   /**
    * Gets the magnitude of this measure in terms of the base unit.
@@ -86,12 +167,110 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
     return unit().getConverterToBase().apply(magnitude());
   }
 
-  default boolean isEquivalent(Measure<U> other) {
+  /**
+   * <pre>
+   *   Inches.of(11).isNear(Inches.of(10), 0.1) // => true
+   *   Inches.of(12).isNear(Inches.of(10), 0.1) // => false
+   * </pre>
+   * @param other the other measurement to compare against
+   * @param varianceThreshold the acceptable variance threshold, in terms of an acceptable +/- error range multiplier.
+   *                          Checking if a value is within 10% means a value of 0.1 should be passed; checking if
+   *                          a value is within 1% means a value of 0.01 should be passed, and so on.
+   * @return
+   */
+  default boolean isNear(Measure<U> other, double varianceThreshold) {
+    var allowedVariance = Math.abs(varianceThreshold); // abs so negative inputs are calculated correctly
+    return other.baseUnitMagnitude() * (1 - allowedVariance) <= this.baseUnitMagnitude() &&
+        other.baseUnitMagnitude() * (1 + allowedVariance) >= this.baseUnitMagnitude();
+  }
+
+  /**
+   * Checks if this measure is equivalent to another measure of the same unit.
+   *
+   * @param other the measure to compare to
+   *
+   * @return
+   */
+  default boolean isEquivalent(Measure<?> other) {
+    if (this.unit().baseType != other.unit().baseType) return false; // Disjoint units, not compatible
+
     return Math.abs(baseUnitMagnitude() - other.baseUnitMagnitude()) <= EQUIVALENCE_THRESHOLD;
   }
 
   @Override
   default int compareTo(Measure<U> o) {
     return Double.compare(this.baseUnitMagnitude(), o.baseUnitMagnitude());
+  }
+
+  /**
+   * Checks if this measure is greater than another measure of the same unit.
+   * @param o the other measure to compare to
+   */
+  default boolean gt(Measure<U> o) {
+    return compareTo(o) > 0;
+  }
+
+  /**
+   * Checks if this measure is greater than or equivalent to another measure of the same unit.
+   * @param o the other measure to compare to
+   */
+  default boolean gte(Measure<U> o) {
+    return (compareTo(o) > 0) || isEquivalent(o);
+  }
+
+  /**
+   * Checks if this measure is less than another measure of the same unit.
+   * @param o the other measure to compare to
+   */
+  default boolean lt(Measure<U> o) {
+    return compareTo(o) < 0;
+  }
+
+  /**
+   * Checks if this measure is less than or equivalent to than another measure of the same unit.
+   * @param o the other measure to compare to
+   */
+  default boolean lte(Measure<U> o) {
+    return (compareTo(o) < 0) || isEquivalent(o);
+  }
+
+  /**
+   * Returns the measure with the absolute value closest to positive infinity.
+   *
+   * @param measures the set of measures to compare
+   * @return
+   * @param <U>
+   */
+  static <U extends Unit<U>> Measure<U> max(Measure<U>... measures) {
+    if (measures.length == 0) return null; // nothing to compare
+
+    Measure<U> max = null;
+    for (Measure<U> measure : measures) {
+      if (max == null || measure.gt(max)) {
+        max = measure;
+      }
+    }
+
+    return max;
+  }
+
+  /**
+   * Returns the measure with the absolute value closest to negative infinity.
+   *
+   * @param measures the set of measures to compare
+   * @return
+   * @param <U>
+   */
+  static <U extends Unit<U>> Measure<U> min(Measure<U>... measures) {
+    if (measures.length == 0) return null; // nothing to compare
+
+    Measure<U> max = null;
+    for (Measure<U> measure : measures) {
+      if (max == null || measure.lt(max)) {
+        max = measure;
+      }
+    }
+
+    return max;
   }
 }

@@ -68,7 +68,19 @@ public class MeasureTest {
   @Test
   public void testAs() {
     Measure<Distance> m = Measure.of(12, Units.Inches);
-    assertEquals(1, m.as(Units.Feet), Measure.EQUIVALENCE_THRESHOLD);
+    assertEquals(1, m.in(Units.Feet), Measure.EQUIVALENCE_THRESHOLD);
+  }
+
+  @Test
+  public void testPerUnit() {
+    var measure = Measure.of(144, Units.Kilograms);
+    var dt = Measure.of(53, Units.Milliseconds);
+
+    // 144 Kg / (53 ms) = (1000 / 53) * 144 Kg/s = (144,000 / 53) Kg/s = (144,000,000/53) g/s
+
+    var result = measure.per(dt);
+    assertEquals(144_000_000.0 / 53, result.baseUnitMagnitude(), 1e-5);
+    assertEquals(Units.Kilograms.per(Units.Milliseconds), result.unit());
   }
 
 }

@@ -11,11 +11,13 @@ public final class Units {
 
   // Pseudo-classes describing the more common units of measure.
 
+  public static final Unit AnonymousBaseUnit = new Unitless(1);
+
   // Distance
   public static final Distance Meters = BaseUnits.Distance;
   public static final Distance Millimeters = Milli(Meters);
   public static final Distance Centimeters = Meters.splitInto(100);
-  public static final Distance Inches = Meters.splitInto(39.3701);
+  public static final Distance Inches = Millimeters.aggregate(25.4);
   public static final Distance Feet = Inches.aggregate(12);
 
   // Time
@@ -58,6 +60,11 @@ public final class Units {
   public static final ElectricCurrent Amps = BaseUnits.ElectricCurrent;
   public static final ElectricCurrent Milliamps = Milli(Amps);
 
+  // Energy
+  public static final Energy Joules = BaseUnits.Energy;
+  public static final Energy Millijoules = Milli(Joules);
+  public static final Energy Kilojoules = Kilo(Joules);
+
   // Power
   public static final Power Watts = BaseUnits.Power;
   public static final Power Milliwatts = Milli(Watts);
@@ -94,6 +101,10 @@ public final class Units {
     return new UnitBuilder<>((U) unit);
   }
 
+  public static <U extends Unit<U>> U anonymous() {
+    return (U) AnonymousBaseUnit;
+  }
+
   public static final class UnitBuilder<U extends Unit<U>> {
 
     private final U base;
@@ -124,7 +135,7 @@ public final class Units {
         this.maxInput = maxInput;
       }
 
-      static double mapValue(double value, double inMin, double inMax, double outMin, double outMax) {
+      double mapValue(double value, double inMin, double inMax, double outMin, double outMax) {
         return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
       }
 
@@ -153,8 +164,8 @@ public final class Units {
       Objects.requireNonNull(fromBase, "fromBase function was not set");
       Objects.requireNonNull(toBase, "toBase function was not set");
       try {
-        Constructor<U> ctor = base.baseType.getDeclaredConstructor(UnaryFunction.class, UnaryFunction.class);
-        return (U) ctor.newInstance(
+        Constructor<? extends U> ctor = base.baseType.getDeclaredConstructor(UnaryFunction.class, UnaryFunction.class);
+        return ctor.newInstance(
             toBase.pipeTo(base.getConverterToBase()), // (derived) -> derived to derivation base, then to true base
             base.getConverterFromBase().pipeTo(fromBase) // (base) -> true base to derivation base, then to derived
         );

@@ -15,7 +15,7 @@ package edu.wpi.first.wpilib.units;
  */
 public class MutableMeasure<U extends Unit<U>> implements Measure<U> {
   private double magnitude;
-  private final U unit;
+  private U unit;
 
   public MutableMeasure(double initialMagnitude, U unit) {
     this.magnitude = initialMagnitude;
@@ -24,6 +24,10 @@ public class MutableMeasure<U extends Unit<U>> implements Measure<U> {
 
   public MutableMeasure(U unit) {
     this(0, unit);
+  }
+
+  public static <U extends Unit<U>> MutableMeasure<U> mutable(Measure<U> measure) {
+    return new MutableMeasure<>(0, measure.unit());
   }
 
   @Override
@@ -50,13 +54,43 @@ public class MutableMeasure<U extends Unit<U>> implements Measure<U> {
     return Measure.of(magnitude * multiplier, unit);
   }
 
-  @Override
-  public Measure<U> add(Measure<U> other) {
-    return Measure.of(magnitude + other.as(unit), unit);
+  // UNSAFE
+
+  public MutableMeasure<U> mut_times(double multiplier) {
+    setMagnitude(this.magnitude * multiplier);
+    return this;
+  }
+
+  public MutableMeasure<U> mut_divide(double divisor) {
+    return mut_times(1 / divisor);
+  }
+
+  public MutableMeasure<U> replace(Measure<U> other) {
+    return replace(other.magnitude(), other.unit());
+  }
+
+  public MutableMeasure<U> replace(double magnitude, U unit) {
+    this.magnitude = magnitude;
+    this.unit = unit;
+    return this;
+  }
+
+  public MutableMeasure<U> acc(double raw) {
+    this.magnitude += raw;
+    return this;
+  }
+
+  public MutableMeasure<U> acc(Measure<U> other) {
+    return acc(other.in(this.unit));
+  }
+
+  public MutableMeasure<U> add(double magnitude, U unit) {
+    this.magnitude += unit().convert(magnitude, unit);
+    return this;
   }
 
   @Override
-  public Measure<U> negate() {
-    return Measure.of(-magnitude, unit);
+  public Measure<U> copy() {
+    return new ImmutableMeasure<>(this.magnitude, this.unit);
   }
 }
