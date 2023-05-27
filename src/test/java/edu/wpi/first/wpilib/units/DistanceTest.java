@@ -7,7 +7,7 @@ import static junit.framework.Assert.*;
 public class DistanceTest {
     @Test
     public void testBaseUnitDistancePerTime() {
-        Velocity<Distance> anonBaseUnit = new Distance(1).per(new Time(1));
+        Velocity<Distance> anonBaseUnit = new Distance(1, "D", "d").per(new Time(1, "T", "t"));
 
         assertTrue(BaseUnits.Velocity.equivalent(anonBaseUnit));
     }

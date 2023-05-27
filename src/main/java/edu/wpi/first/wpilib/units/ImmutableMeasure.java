@@ -85,4 +85,9 @@ public class ImmutableMeasure<U extends Unit<U>> implements Measure<U> {
   public Measure<U> copy() {
     return this; // already immutable, no need to allocate a new object
   }
+
+  @Override
+  public String toString() {
+    return toShortString();
+  }
 }

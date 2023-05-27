@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilib.units;
 
+import java.text.DecimalFormat;
+
 /**
  * A measure holds the magnitude and unit of some dimension, such as distance, time, or speed. Two measures
  * with the same <i>unit</i> and <i>magnitude</i> are effectively the same object.
@@ -272,5 +274,30 @@ public interface Measure<U extends Unit<U>> extends Comparable<Measure<U>> {
     }
 
     return max;
+  }
+
+  /**
+   * Returns a string representation of this measurement in a shorthand form.
+   * The symbol of the backing unit is used, rather than the full name, and
+   * the magnitude is represented in scientific notation.
+   *
+   * @return the short form representation of this measurement
+   */
+  default String toShortString() {
+    // eg 1.234e+04 V/m (1234 Volt per Meter in long form)
+    return String.format("%.3e %s", magnitude(), unit().symbol());
+  }
+
+  /**
+   * Returns a string representation of this measurement in a longhand form.
+   * The name of the backing unit is used, rather than its symbol, and
+   * the magnitude is represented in a full string, no scientific notation.
+   * (Very large values may be represented in scientific notation, however)
+   *
+   * @return the long form representation of this measurement
+   */
+  default String toLongString() {
+    // eg 1234 Volt per Meter (1.234e+04 V/m in short form)
+    return String.format("%s %s", magnitude(), unit().name());
   }
 }

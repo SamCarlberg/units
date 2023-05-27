@@ -93,4 +93,9 @@ public class MutableMeasure<U extends Unit<U>> implements Measure<U> {
   public Measure<U> copy() {
     return new ImmutableMeasure<>(this.magnitude, this.unit);
   }
+
+  @Override
+  public String toString() {
+    return toShortString();
+  }
 }

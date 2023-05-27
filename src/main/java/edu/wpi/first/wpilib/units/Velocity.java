@@ -6,7 +6,7 @@ import java.util.Map;
 public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
 
   /**
-   * Stores velocity units that were created ad-hoc using {@link #combine(Unit, Time)}. Does not store
+   * Stores velocity units that were created ad-hoc using {@link #combine(Unit, Time, String, String)}. Does not store
    * objects created directly by constructors.
    */
   // TODO: Move this to use primitive long keys instead of boxed values to avoid allocations
@@ -37,11 +37,25 @@ public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
    * <p>It's recommended to use the convenience function {@link Unit#per(Time)} instead of calling
    * this factory directly.
    *
+   * @param <D>       the type of the numerator unit
    * @param numerator the numerator unit
-   * @param period the period for unit time
+   * @param period    the period for unit time
+   * @param name
+   * @param symbol
    * @return
-   * @param <D> the type of the numerator unit
    */
+  @SuppressWarnings("unchecked")
+  public static <D extends Unit<D>> Velocity<D> combine(Unit<D> numerator, Time period, String name, String symbol) {
+    Long key = cacheKey(numerator, period); // intentionally boxing here to avoid autoboxing allocations later
+    if (cache.containsKey(key)) {
+      return cache.get(key);
+    }
+
+    Velocity<D> velocity = new Velocity<>(numerator.toBaseUnits(1) / period.toBaseUnits(1), name, symbol);
+    cache.put(key, velocity);
+    return velocity;
+  }
+
   @SuppressWarnings("unchecked")
   public static <D extends Unit<D>> Velocity<D> combine(Unit<D> numerator, Time period) {
     Long key = cacheKey(numerator, period); // intentionally boxing here to avoid autoboxing allocations later
@@ -49,25 +63,28 @@ public class Velocity<D extends Unit<D>> extends Unit<Velocity<D>> {
       return cache.get(key);
     }
 
-    Velocity<D> velocity = new Velocity<>(numerator.toBaseUnits(1) / period.toBaseUnits(1));
+    var name = numerator.name() + " per " + period.name();
+    var symbol = numerator.symbol() + "/" + period.symbol();
+
+    Velocity<D> velocity = new Velocity<>(numerator.toBaseUnits(1) / period.toBaseUnits(1), name, symbol);
     cache.put(key, velocity);
     return velocity;
   }
 
-  Velocity(double baseUnitEquivalent) {
-    super((Class) Velocity.class, baseUnitEquivalent);
+  Velocity(double baseUnitEquivalent, String name, String symbol) {
+    super((Class) Velocity.class, baseUnitEquivalent, name, symbol);
   }
 
-  Velocity(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
-    super((Class) Velocity.class, toBaseConverter, fromBaseConverter);
+  Velocity(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
+    super((Class) Velocity.class, toBaseConverter, fromBaseConverter, name, symbol);
   }
 
-  protected Velocity(Class<? extends Velocity<D>> baseType, double baseUnitEquivalent) {
-    super(baseType, baseUnitEquivalent);
+  protected Velocity(Class<? extends Velocity<D>> baseType, double baseUnitEquivalent, String name, String symbol) {
+    super(baseType, baseUnitEquivalent, name, symbol);
   }
 
-  protected Velocity(Class<? extends Velocity<D>> baseType, UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
-    super(baseType, toBaseConverter, fromBaseConverter);
+  protected Velocity(Class<? extends Velocity<D>> baseType, UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
+    super(baseType, toBaseConverter, fromBaseConverter, name, symbol);
   }
 
 }

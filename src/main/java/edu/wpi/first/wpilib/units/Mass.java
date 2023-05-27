@@ -8,12 +8,12 @@ public class Mass extends Unit<Mass> {
    * @param baseUnitEquivalent the multiplier to convert this unit to the base unit of this type. For example,
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
-  Mass(double baseUnitEquivalent) {
-    super(Mass.class, baseUnitEquivalent);
+  Mass(double baseUnitEquivalent, String name, String symbol) {
+    super(Mass.class, baseUnitEquivalent, name, symbol);
   }
 
-  Mass(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
-    super(Mass.class, toBaseConverter, fromBaseConverter);
+  Mass(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
+    super(Mass.class, toBaseConverter, fromBaseConverter, name, symbol);
   }
 
 }

@@ -14,7 +14,7 @@ public class VelocityTest {
 
   @Test
   public void testToAcceleration() {
-    Velocity<Velocity<Distance>> metersPerSecondPerMillisecond = (Velocity) MetersPerSecond.per(Millisecond);
+    Velocity<Velocity<Distance>> metersPerSecondPerMillisecond = MetersPerSecond.per(Millisecond);
 
     assertEquals(1000, metersPerSecondPerMillisecond.of(1).in(MetersPerSecondPerSecond), 0);
     assertEquals(0, metersPerSecondPerMillisecond.of(0).in(MetersPerSecondPerSecond), 0);
@@ -25,8 +25,10 @@ public class VelocityTest {
     assertSame("Feet.per(Second) should return a cached object instance", FeetPerSecond, Feet.per(Second));
 
     // completely arbitrary units chosen because they won't have already been cached
-    var someDistance = Value.splitInto(1024).aggregate(3 * Math.PI);
-    var someTime = Milliseconds.splitInto(42).aggregate(17 * Math.E);
-    assertSame(someDistance.per(someTime), someDistance.per(someTime));
+    var someDistance = new ExampleUnit(5);
+    var someTime = new ExampleUnit(600);
+    var firstInvocation = someDistance.per(someTime);
+    var secondInvocation = someDistance.per(someTime);
+    assertSame(firstInvocation + " was not the same object as " + secondInvocation, firstInvocation, secondInvocation);
   }
 }

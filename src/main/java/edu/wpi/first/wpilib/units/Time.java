@@ -8,12 +8,12 @@ public class Time extends Unit<Time> {
    * @param baseUnitEquivalent the multiplier to convert this unit to the base unit of this type. For example,
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
    */
-  Time(double baseUnitEquivalent) {
-    super(Time.class, baseUnitEquivalent);
+  Time(double baseUnitEquivalent, String name, String symbol) {
+    super(Time.class, baseUnitEquivalent, name, symbol);
   }
 
-  Time(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
-    super(Time.class, toBaseConverter, fromBaseConverter);
+  Time(UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
+    super(Time.class, toBaseConverter, fromBaseConverter, name, symbol);
   }
 
 }

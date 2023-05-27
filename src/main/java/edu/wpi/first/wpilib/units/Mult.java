@@ -11,7 +11,7 @@ public class Mult<A extends Unit<A>, B extends Unit<B>> extends Unit<Mult<A, B>>
   private final B b;
 
   protected Mult(Class<? extends Mult<A, B>> baseType, A a, B b) {
-    super(baseType, a.toBaseUnits(1) * b.toBaseUnits(1));
+    super(baseType, a.toBaseUnits(1) * b.toBaseUnits(1), a.name() + " " + b.name(), a.symbol() + "" + b.symbol());
     this.a = a;
     this.b = b;
   }

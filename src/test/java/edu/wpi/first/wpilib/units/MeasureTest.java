@@ -76,11 +76,25 @@ public class MeasureTest {
     var measure = Measure.of(144, Units.Kilograms);
     var dt = Measure.of(53, Units.Milliseconds);
 
-    // 144 Kg / (53 ms) = (1000 / 53) * 144 Kg/s = (144,000 / 53) Kg/s = (144,000,000/53) g/s
+    // 144 Kg / (53 ms) = (1000 / 53) * 144 Kg/s = (144,000 / 53) Kg/s
 
     var result = measure.per(dt);
-    assertEquals(144_000_000.0 / 53, result.baseUnitMagnitude(), 1e-5);
+    assertEquals(144_000.0 / 53, result.baseUnitMagnitude(), 1e-5);
     assertEquals(Units.Kilograms.per(Units.Milliseconds), result.unit());
+  }
+
+  @Test
+  public void testToShortString() {
+    var measure = Measure.of(343, Units.Volts);
+    assertEquals("3.430e+02 V", measure.toShortString());
+  }
+
+  @Test
+  public void testToLongString() {
+    var measure = Measure.of(343, Units.Volts);
+    assertEquals("343.0 Volt", measure.toLongString());
+    assertEquals("343.0001 Volt", Measure.of(343.0001, Units.Volts).toLongString());
+    assertEquals("1.2345678912345679E8 Volt", Measure.of(123456789.123456789, Units.Volts).toLongString());
   }
 
 }

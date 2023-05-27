@@ -18,17 +18,24 @@ public class Unit<U extends Unit<U>> {
   private Measure<U> zero;
   private Measure<U> one;
 
+  private final String name;
+  private final String symbol;
+
   /**
    * Creates a new unit defined by its relationship to some base unit.
    *
    * @param baseType
    * @param toBaseConverter   a function for converting units of this type to the base unit
    * @param fromBaseConverter a function for converting units of the base unit to this one
+   * @param name
+   * @param symbol
    */
-  protected Unit(Class<? extends U> baseType, UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter) {
-    this.baseType = baseType;
+  protected Unit(Class<? extends U> baseType, UnaryFunction toBaseConverter, UnaryFunction fromBaseConverter, String name, String symbol) {
+    this.baseType = Objects.requireNonNull(baseType);
     this.toBaseConverter = Objects.requireNonNull(toBaseConverter);
     this.fromBaseConverter = Objects.requireNonNull(fromBaseConverter);
+    this.name = Objects.requireNonNull(name);
+    this.symbol = Objects.requireNonNull(symbol);
   }
 
   /**
@@ -37,9 +44,11 @@ public class Unit<U extends Unit<U>> {
    * @param baseType
    * @param baseUnitEquivalent the multiplier to convert this unit to the base unit of this type. For example,
    *                           meters has a multiplier of 1, mm has a multiplier of 1e3, and km has a multiplier of 1e-3.
+   * @param name
+   * @param symbol
    */
-  protected Unit(Class<? extends U> baseType, double baseUnitEquivalent) {
-    this(baseType, x -> x * baseUnitEquivalent, x -> x / baseUnitEquivalent);
+  protected Unit(Class<? extends U> baseType, double baseUnitEquivalent, String name, String symbol) {
+    this(baseType, x -> x * baseUnitEquivalent, x -> x / baseUnitEquivalent, name, symbol);
   }
 
   /**
@@ -106,56 +115,6 @@ public class Unit<U extends Unit<U>> {
   }
 
   /**
-   * Creates a new unit based off this one, where <i>scale</i> amount of this unit
-   * is equivalent to one of the new unit. For example, {@code Unit km = Meters.aggregate(1000)}
-   *
-   * @param amount the magnitude of a measure of this unit to be equivalent to a measure of magnitude 1 of
-   *               the resulting unit. For example, {@code Seconds.aggregate(60)} would result in minutes.
-   * @see #splitInto(double)
-   */
-  public U aggregate(double amount) {
-    if (amount == 1) {
-      // Same units, just reuse this object.
-      return (U) this;
-    }
-    Constructor<? extends U> ctor = null;
-
-    try {
-      ctor = baseType.getDeclaredConstructor(UnaryFunction.class, UnaryFunction.class);
-    } catch (NoSuchMethodException e) {
-      throw new RuntimeException(
-          "Base unit type " + baseType.getName() + " does not have a constructor that takes base unit conversion functions",
-          e
-      );
-    }
-
-    try {
-      return ctor.newInstance(
-          this.toBaseConverter.pipeTo(x -> x * amount),
-          this.fromBaseConverter.pipeTo(x -> x / amount)
-      );
-    } catch (InstantiationException e) {
-      throw new RuntimeException("Class " + baseType.getName() + " cannot be instantiated", e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException("Could not access constructor " + ctor.getName(), e);
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException("Constructor " + ctor.getName() + " raised an error when called!", e);
-    }
-  }
-
-  /**
-   * Creates a new unit based off this one, where <i>scale</i> amount of the new new unit
-   * is equivalent to one if this unit. For example. {@code Unit mm = Meters.splitInto(1000)}
-   *
-   * @param amount the magnitude of a measure of the resulting unit to be equivalent to a measure of magnitude 1 of
-   *               this unit. For example, {@code Feet.splitInto(12)} would result in inches.
-   * @see #aggregate(double)
-   */
-  public U splitInto(double amount) {
-    return aggregate(1 / amount);
-  }
-
-  /**
    * Creates a velocity unit derived from this one. Can be chained to denote velocity, acceleration, jerk, etc.
    *
    * <pre>
@@ -207,5 +166,18 @@ public class Unit<U extends Unit<U>> {
 
     return Math.abs(this.fromBaseConverter.apply(arbitrary) - other.fromBaseConverter.apply(arbitrary)) <= Measure.EQUIVALENCE_THRESHOLD &&
         Math.abs(this.toBaseConverter.apply(arbitrary) - other.toBaseConverter.apply(arbitrary)) <= Measure.EQUIVALENCE_THRESHOLD;
+  }
+
+  public String name() {
+    return name;
+  }
+
+  public String symbol() {
+    return symbol;
+  }
+
+  @Override
+  public String toString() {
+    return name();
   }
 }
